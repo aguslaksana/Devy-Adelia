@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-scrollbar {
+	width: 8px; /* Set the width of the scroll bar */
+	height: 8px; /* Set the height of the scroll bar */
+}
+
+/* Customize the thumb */
+::-webkit-scrollbar-thumb {
+	background-color: #ea580c; /* Set the color of the thumb */
+	border-radius: 12px; /* Rounded corners */
+}
+
+/* Customize the track */
+::-webkit-scrollbar-track {
+	background-color: #ffffff00; /* Set the background color of the track */
+}
+
+.header-default {
+	/* Initial background and opacity for the header */
+	background-color: white;
+	opacity: 1;
+}
+
+.header-scrolled {
+	/* Make the header transparent when scrolled */
+	background-color: white;
+	opacity: 0.8; /* Adjust opacity as needed */
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+@media (max-width: 768px) {
+	#landing-section {
+		/* Apply maxHeight style only on mobile screens */
+		margin-top: 4rem;
+		padding-top: 2rem;
+		min-height: calc(100vh - 4rem);
+	}
+	#quotes {
+		min-height: calc(100vh - 4rem);
+	}
+}
