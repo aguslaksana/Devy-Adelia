@@ -12,7 +12,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html className="bg-white font-sans leading-normal tracking-normal">
-			<title>Deskripfun</title>
+			<title>Game Deskripfun</title>
 			<body className="flex flex-col min-h-screen">
 				<OrientationChecker />
 				<MusicProvider>

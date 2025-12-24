@@ -66,9 +66,10 @@ export default function ChooseGame() {
             </button>
             <h4 className="text-3xl font-bold text-gray-800 mb-4 text-center">Petunjuk Permainan</h4>
             <div className="flex-grow rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-100">
+              {/* LINK DRIVE TELAH DIPERBARUI KE /preview AGAR BISA DI-EMBED */}
               <iframe
                 className="w-full h-full border-0"
-                src="https://drive.google.com/file/d/1MvxcqI9BilE26F9ErFlEx4o2Ezz-ubNS/preview"
+                src="https://drive.google.com/file/d/1hmWlgQOugMiAE-oy8nK4NvYn_bvwAiyS/preview"
                 allow="autoplay"
                 allowFullScreen
               ></iframe>
@@ -86,7 +87,6 @@ export default function ChooseGame() {
             href="/bahan-belajar/permainan/1" 
             className={`${cardBaseClass} bg-gradient-to-br from-orange-400 to-red-500`}
           >
-            {/* Ikon Puzzle Besar */}
             <span className="text-6xl mb-1 drop-shadow-md transform group-hover:rotate-12 transition-transform duration-300">🧩</span>
             
             <div className="flex flex-col items-center">

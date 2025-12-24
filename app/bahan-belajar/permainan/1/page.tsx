@@ -102,12 +102,10 @@ export default function PermainanPageLevel1() {
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
 
   // === TIMER (3 MENIT PER GAME) ===
-  const GAME_DURATION = 180; // 3 menit dalam detik
+  const GAME_DURATION = 180; 
   const [timeLeft, setTimeLeft] = useState<number>(GAME_DURATION);
 
-  // Efek Timer Countdown
   useEffect(() => {
-    // Timer HANYA jalan kalau sedang di dalam game ("game") dan waktu belum habis
     if (currentView !== "game") return;
     if (timeLeft <= 0) return;
 
@@ -122,9 +120,8 @@ export default function PermainanPageLevel1() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, currentView]); // Ditambahkan dependency currentView
+  }, [timeLeft, currentView]);
 
-  // Efek Waktu Habis
   useEffect(() => {
     if (timeLeft === 0 && !isSubmitted && currentView === "game") {
       setFeedbackMessage("Waktu permainan habis!");
@@ -132,23 +129,18 @@ export default function PermainanPageLevel1() {
     }
   }, [timeLeft, isSubmitted, currentView]);
 
-  // Efek Layout
   useEffect(() => {
     const calculateLayout = () => {
       const navbar = document.getElementById("navbar");
       const footer = document.getElementById("footer");
       const navbarHeight = navbar ? navbar.clientHeight : 0;
       const footerHeight = footer ? footer.clientHeight : 0;
-      
       const availableHeight = window.innerHeight - navbarHeight - footerHeight - 20;
-      
       setIframeHeight(`${availableHeight > 0 ? availableHeight : 500}px`);
       setMarginTop(`${navbarHeight}px`);
     };
-
     setTimeout(calculateLayout, 100);
     window.addEventListener("resize", calculateLayout);
-    
     return () => window.removeEventListener("resize", calculateLayout);
   }, []);
 
@@ -161,21 +153,16 @@ export default function PermainanPageLevel1() {
   const startGame = (index: number) => {
     setActiveGameIndex(index);
     setCurrentView("game");
-    
-    // RESET SEMUA STATE SAAT GAME BARU DIMULAI
     setDescription(""); 
     setFeedbackMessage("");
     setScore(0);
     setIsSubmitted(false);
     setIsGameWon(false);
-    
-    // RESET TIMER KE 3 MENIT
     setTimeLeft(GAME_DURATION);
   };
 
   const backToSelection = () => {
     setCurrentView("selection");
-    // Waktu dihentikan/tidak masalah karena timer hanya jalan di view 'game'
   };
 
   const checkAnswer = () => {
@@ -188,11 +175,6 @@ export default function PermainanPageLevel1() {
     }
 
     const currentGame = LEVEL_1_GAMES[activeGameIndex];
-    if (!currentGame) {
-      console.error("Data game tidak ditemukan");
-      return;
-    }
-
     const input = description.toLowerCase();
     const keywords = currentGame.keywords;
     let matches = 0;
@@ -209,12 +191,12 @@ export default function PermainanPageLevel1() {
     setIsSubmitted(true);
 
     if (finalScore === 100) {
-      setFeedbackMessage("LUAR BIASA! Jawabanmu Sempurna!");
+      setFeedbackMessage("LUAR BIASA! Deskripsimu sangat lengkap!");
       setIsGameWon(true);
     } else if (finalScore >= 60) {
-      setFeedbackMessage("Bagus! Tapi masih ada ciri-ciri yang terlewat.");
+      setFeedbackMessage("Bagus! Deskripsimu sudah cukup baik.");
     } else {
-      setFeedbackMessage("Coba lagi! Perhatikan ciri-cirinya.");
+      setFeedbackMessage("Ayo, ceritakan lebih detil lagi gambarnya.");
     }
   };
 
@@ -236,7 +218,6 @@ export default function PermainanPageLevel1() {
         <div className="container mx-auto px-4 py-8 flex flex-col items-center">
           <h1 className={`text-4xl text-orange-600 font-bold mb-2 ${salsa.className}`}>LEVEL 1</h1>
           
-          {/* Info Waktu Statis */}
           <div className="bg-orange-100 border-2 border-orange-300 rounded-lg px-4 py-2 mb-4 text-orange-800 font-bold">
             ⏳ Waktu Pengerjaan: 3 Menit / Game
           </div>
@@ -256,7 +237,7 @@ export default function PermainanPageLevel1() {
                 <h3 className={`text-2xl font-bold text-gray-800 mb-2 ${salsa.className}`}>
                   TANTANGAN {i + 1}
                 </h3>
-                <p className="text-gray-600 text-sm">Susun puzzle dan tebak budaya apa yang muncul!</p>
+                <p className="text-gray-600 text-sm">Susun kepingan puzzle dan buatlah 2 kalimat deskripsi!</p>
               </button>
             ))}
           </div>
@@ -280,7 +261,6 @@ export default function PermainanPageLevel1() {
               ⬅ Kembali
             </button>
 
-            {/* Timer Ticking */}
             <div className={`flex items-center px-4 py-1 rounded bg-white font-mono border-2 font-bold ${
               timeLeft < 30 ? 'border-red-500 text-red-600 animate-pulse' : 'border-orange-200 text-orange-600'
             }`}>
@@ -290,10 +270,9 @@ export default function PermainanPageLevel1() {
             <div className="bg-white/20 px-4 py-1 rounded text-white font-bold text-sm">Skor: {score}</div>
           </div>
 
-          {/* Layout */}
           <div className="flex flex-col md:flex-row w-full overflow-hidden" style={{ height: iframeHeight }}>
 
-            {/* Iframe */}
+            {/* Iframe Puzzle */}
             <div className="w-full md:w-2/3 h-1/2 md:h-full bg-gray-900 relative border-r-4 border-orange-300">
               {LEVEL_1_GAMES[activeGameIndex] && (
                 <iframe
@@ -308,7 +287,7 @@ export default function PermainanPageLevel1() {
               {timeLeft === 0 && (
                 <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-10 text-white p-4">
                   <h2 className={`text-3xl mb-4 text-red-500 ${salsa.className}`}>WAKTU HABIS!</h2>
-                  <p className="text-center text-sm mb-4">Kesempatan untuk level ini telah berakhir.</p>
+                  <p className="text-center text-sm mb-4">Ayo coba lagi di kesempatan berikutnya.</p>
                   <button
                     onClick={backToSelection}
                     className="bg-white text-black px-6 py-2 rounded-full font-bold hover:scale-105"
@@ -317,25 +296,15 @@ export default function PermainanPageLevel1() {
                   </button>
                 </div>
               )}
-
-              <div className="absolute top-2 right-2 opacity-50 hover:opacity-100">
-                {LEVEL_1_GAMES[activeGameIndex] && (
-                    <Link 
-                        href={LEVEL_1_GAMES[activeGameIndex].src} 
-                        target="_blank" 
-                        className="text-[10px] text-white bg-black/50 px-2 py-1 rounded"
-                    >
-                    Buka Tab Baru
-                    </Link>
-                )}
-              </div>
             </div>
 
-            {/* Form */}
+            {/* Form Input Deskripsi */}
             <div className="w-full md:w-1/3 h-1/2 md:h-full bg-[#F5F5DC] p-4 overflow-y-auto">
               <div className="bg-white p-4 rounded-xl shadow border-2 flex flex-col h-full border-orange-200">
-                <h2 className={`text-lg font-bold text-orange-600 mb-2 ${salsa.className}`}>Tebak Gambar</h2>
-                <p className="text-xs text-gray-700 mb-2">Sebutkan nama, asal daerah, dan ciri-cirinya!</p>
+                <h2 className={`text-lg font-bold text-orange-600 mb-2 ${salsa.className}`}>Tulis Deskripsi</h2>
+                <p className="text-xs text-gray-700 mb-2 font-semibold">
+                  Susunlah 2 kalimat deskripsi berdasarkan gambar puzzle yang telah kamu selesaikan!
+                </p>
 
                 <textarea
                   value={description}
@@ -344,7 +313,8 @@ export default function PermainanPageLevel1() {
                       if(isSubmitted) setIsSubmitted(false); 
                   }}
                   disabled={timeLeft === 0}
-                  placeholder="Contoh: Ini wayang kulit dari Jawa berwarna cokelat..."
+                  // Placeholder dikosongkan dari contoh kalimat
+                  placeholder="Tuliskan 2 kalimat deskripsi kamu di sini..."
                   className="w-full flex-grow p-3 border rounded mb-3 text-sm resize-none focus:outline-none focus:border-orange-500 text-gray-800"
                 />
 
@@ -363,7 +333,7 @@ export default function PermainanPageLevel1() {
                     timeLeft === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
                   }`}
                 >
-                  Cek Jawaban
+                  Simpan Deskripsi
                 </button>
               </div>
             </div>

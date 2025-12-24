@@ -91,7 +91,6 @@ const LEVEL_2_GAMES: GameData[] = [
 export default function PermainanPageLevel2() {
   const router = useRouter();
 
-  // === STATE MANAGEMENT ===
   const [iframeHeight, setIframeHeight] = useState<string>("100vh");
   const [marginTop, setMarginTop] = useState<string>("0px");
 
@@ -104,21 +103,17 @@ export default function PermainanPageLevel2() {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isGameWon, setIsGameWon] = useState<boolean>(false);
 
-  // === TIMER (3 MENIT PER GAME) ===
-  const GAME_DURATION = 180; // 3 menit dalam detik
+  const GAME_DURATION = 180; 
   const [timeLeft, setTimeLeft] = useState<number>(GAME_DURATION);
 
-  // Cek Otorisasi Level 2 (User harus sudah tamat Level 1)
   useEffect(() => {
     const highestLevelCompleted = Number(localStorage.getItem('highestLevelCompleted') || 0);
-    // Jika belum menyelesaikan level 1 (nilainya 0), kembalikan ke menu
     if (highestLevelCompleted < 1) {
        alert("Selesaikan Level 1 terlebih dahulu!");
        router.replace('/bahan-belajar/permainan');
     }
   }, [router]);
 
-  // Efek Timer Countdown
   useEffect(() => {
     if (currentView !== "game") return;
     if (timeLeft <= 0) return;
@@ -136,7 +131,6 @@ export default function PermainanPageLevel2() {
     return () => clearInterval(timer);
   }, [timeLeft, currentView]);
 
-  // Efek Waktu Habis
   useEffect(() => {
     if (timeLeft === 0 && !isSubmitted && currentView === "game") {
       setFeedbackMessage("Waktu permainan habis!");
@@ -144,23 +138,18 @@ export default function PermainanPageLevel2() {
     }
   }, [timeLeft, isSubmitted, currentView]);
 
-  // Efek Layout
   useEffect(() => {
     const calculateLayout = () => {
       const navbar = document.getElementById("navbar");
       const footer = document.getElementById("footer");
       const navbarHeight = navbar ? navbar.clientHeight : 0;
       const footerHeight = footer ? footer.clientHeight : 0;
-      
       const availableHeight = window.innerHeight - navbarHeight - footerHeight - 20;
-      
       setIframeHeight(`${availableHeight > 0 ? availableHeight : 500}px`);
       setMarginTop(`${navbarHeight}px`);
     };
-
     setTimeout(calculateLayout, 100);
     window.addEventListener("resize", calculateLayout);
-    
     return () => window.removeEventListener("resize", calculateLayout);
   }, []);
 
@@ -173,15 +162,11 @@ export default function PermainanPageLevel2() {
   const startGame = (index: number) => {
     setActiveGameIndex(index);
     setCurrentView("game");
-    
-    // RESET SEMUA STATE SAAT GAME BARU DIMULAI
     setDescription(""); 
     setFeedbackMessage("");
     setScore(0);
     setIsSubmitted(false);
     setIsGameWon(false);
-    
-    // RESET TIMER KE 3 MENIT
     setTimeLeft(GAME_DURATION);
   };
 
@@ -199,11 +184,6 @@ export default function PermainanPageLevel2() {
     }
 
     const currentGame = LEVEL_2_GAMES[activeGameIndex];
-    if (!currentGame) {
-      console.error("Data game tidak ditemukan");
-      return;
-    }
-
     const input = description.toLowerCase();
     const keywords = currentGame.keywords;
     let matches = 0;
@@ -220,19 +200,18 @@ export default function PermainanPageLevel2() {
     setIsSubmitted(true);
 
     if (finalScore === 100) {
-      setFeedbackMessage("LUAR BIASA! Jawabanmu Sempurna!");
+      setFeedbackMessage("LUAR BIASA! 4 kalimatmu sangat informatif!");
       setIsGameWon(true);
     } else if (finalScore >= 60) {
-      setFeedbackMessage("Bagus! Tapi masih ada ciri-ciri yang terlewat.");
+      setFeedbackMessage("Bagus! Deskripsimu sudah cukup baik.");
     } else {
-      setFeedbackMessage("Coba lagi! Perhatikan ciri-cirinya.");
+      setFeedbackMessage("Ayo ceritakan lebih banyak lagi dalam 4 kalimat.");
     }
   };
 
   const handleCompleteLevel = () => {
     if (typeof window !== "undefined") {
       const currentProgress = Number(localStorage.getItem("highestLevelCompleted") || 0);
-      // Update progress ke Level 2 jika belum mencapainya
       if (currentProgress < 2) {
         localStorage.setItem("highestLevelCompleted", "2");
       }
@@ -248,7 +227,6 @@ export default function PermainanPageLevel2() {
         <div className="container mx-auto px-4 py-8 flex flex-col items-center">
           <h1 className={`text-4xl text-cyan-700 font-bold mb-2 ${salsa.className}`}>LEVEL 2</h1>
           
-          {/* Info Waktu Statis */}
           <div className="bg-cyan-100 border-2 border-cyan-300 rounded-lg px-4 py-2 mb-4 text-cyan-800 font-bold">
             ⏳ Waktu Pengerjaan: 3 Menit / Game
           </div>
@@ -268,7 +246,8 @@ export default function PermainanPageLevel2() {
                 <h3 className={`text-2xl font-bold text-gray-800 mb-2 ${salsa.className}`}>
                   {game.title}
                 </h3>
-                <p className="text-gray-600 text-sm">Susun puzzle dan temukan keunikannya!</p>
+                {/* Perubahan Instruksi Level 2 */}
+                <p className="text-gray-600 text-sm">Susun puzzle dan buatlah 4 kalimat deskripsi yang lengkap!</p>
               </button>
             ))}
           </div>
@@ -286,13 +265,11 @@ export default function PermainanPageLevel2() {
       {currentView === "game" && (
         <div className="flex flex-col h-full">
 
-          {/* Header */}
           <div className="bg-cyan-600 p-3 flex justify-between items-center shadow-md">
             <button onClick={backToSelection} className="bg-white text-cyan-700 px-4 py-1 rounded-full font-bold shadow hover:bg-gray-100 text-sm">
               ⬅ Kembali
             </button>
 
-            {/* Timer Ticking */}
             <div className={`flex items-center px-4 py-1 rounded bg-white font-mono border-2 font-bold ${
               timeLeft < 30 ? 'border-red-500 text-red-600 animate-pulse' : 'border-cyan-200 text-cyan-600'
             }`}>
@@ -302,10 +279,8 @@ export default function PermainanPageLevel2() {
             <div className="bg-white/20 px-4 py-1 rounded text-white font-bold text-sm">Skor: {score}</div>
           </div>
 
-          {/* Layout */}
           <div className="flex flex-col md:flex-row w-full overflow-hidden" style={{ height: iframeHeight }}>
 
-            {/* Iframe */}
             <div className="w-full md:w-2/3 h-1/2 md:h-full bg-gray-900 relative border-r-4 border-cyan-300">
               {LEVEL_2_GAMES[activeGameIndex] && (
                 <iframe
@@ -320,34 +295,22 @@ export default function PermainanPageLevel2() {
               {timeLeft === 0 && (
                 <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-10 text-white p-4">
                   <h2 className={`text-3xl mb-4 text-red-500 ${salsa.className}`}>WAKTU HABIS!</h2>
-                  <p className="text-center text-sm mb-4">Kesempatan untuk tantangan ini telah berakhir.</p>
-                  <button
-                    onClick={backToSelection}
-                    className="bg-white text-black px-6 py-2 rounded-full font-bold hover:scale-105"
-                  >
+                  <p className="text-center text-sm mb-4">Ayo coba lagi untuk melengkapi deskripsi!</p>
+                  <button onClick={backToSelection} className="bg-white text-black px-6 py-2 rounded-full font-bold hover:scale-105">
                     Coba Game Lain
                   </button>
                 </div>
               )}
-
-              <div className="absolute top-2 right-2 opacity-50 hover:opacity-100">
-                {LEVEL_2_GAMES[activeGameIndex] && (
-                    <Link 
-                        href={LEVEL_2_GAMES[activeGameIndex].src} 
-                        target="_blank" 
-                        className="text-[10px] text-white bg-black/50 px-2 py-1 rounded"
-                    >
-                    Buka Tab Baru
-                    </Link>
-                )}
-              </div>
             </div>
 
-            {/* Form */}
             <div className="w-full md:w-1/3 h-1/2 md:h-full bg-[#E0F2F1] p-4 overflow-y-auto">
               <div className="bg-white p-4 rounded-xl shadow border-2 flex flex-col h-full border-cyan-200">
-                <h2 className={`text-lg font-bold text-cyan-700 mb-2 ${salsa.className}`}>Tebak Budaya</h2>
-                <p className="text-xs text-gray-700 mb-2">Sebutkan nama, daerah, dan ciri-khas yang terlihat!</p>
+                {/* Judul Baru */}
+                <h2 className={`text-lg font-bold text-cyan-700 mb-2 ${salsa.className}`}>Tulis Deskripsi Lengkap</h2>
+                {/* Instruksi 4 Kalimat */}
+                <p className="text-xs text-gray-700 mb-2 font-semibold">
+                   Buatlah 4 kalimat deskripsi berdasarkan gambar yang berhasil kamu susun!
+                </p>
 
                 <textarea
                   value={description}
@@ -356,7 +319,8 @@ export default function PermainanPageLevel2() {
                       if(isSubmitted) setIsSubmitted(false); 
                   }}
                   disabled={timeLeft === 0}
-                  placeholder="Contoh: Ini adalah tari piring dari Sumatera Barat, membawa piring..."
+                  // Placeholder dikosongkan dari contoh
+                  placeholder="Tuliskan 4 kalimat deskripsi kamu di sini..."
                   className="w-full flex-grow p-3 border rounded mb-3 text-sm resize-none focus:outline-none focus:border-cyan-500 text-gray-800"
                 />
 
@@ -375,7 +339,7 @@ export default function PermainanPageLevel2() {
                     timeLeft === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
                   }`}
                 >
-                  Cek Jawaban
+                  Simpan Jawaban
                 </button>
               </div>
             </div>
