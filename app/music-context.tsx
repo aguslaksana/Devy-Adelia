@@ -1,84 +1,64 @@
 "use client";
 
-import { createContext, useContext, useState, useRef, ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 
-const MusicContext = createContext<{
-	playMusic: () => void;
-	toggleMusic: () => void;
+type MusicContextType = {
 	isPlaying: boolean;
+	playMusic: () => void;
+	pauseMusic: () => void;
 	playClickSound: () => void;
-} | null>(null);
-
-export const useMusic = () => {
-	const context = useContext(MusicContext);
-	if (!context) {
-		throw new Error("useMusic must be used within a MusicProvider");
-	}
-	return context;
+	toggleMusic: () => void;
 };
 
-export const MusicProvider = ({ children }: { children: ReactNode }) => {
+const MusicContext = createContext<MusicContextType | undefined>(undefined);
+
+export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+	const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
 	const [isPlaying, setIsPlaying] = useState(false);
-	const audioRef = useRef<HTMLAudioElement>(null);
-	const clickAudioRef = useRef<HTMLAudioElement>(null);
+	const bgMusicRef = useRef<HTMLAudioElement | null>(null);
+	const clickSoundRef = useRef<HTMLAudioElement | null>(null);
+
+	useEffect(() => {
+		bgMusicRef.current = new Audio(`${prefix}/musik-bg.opus`);
+		bgMusicRef.current.loop = true;
+		bgMusicRef.current.volume = 0.4;
+
+		clickSoundRef.current = new Audio(`${prefix}/click.opus`);
+		
+		return () => {
+			bgMusicRef.current?.pause();
+		};
+	}, [prefix]);
 
 	const playMusic = () => {
-		if (audioRef.current && !isPlaying) {
-			audioRef.current.play();
-			setIsPlaying(true);
-		}
+		bgMusicRef.current?.play().then(() => setIsPlaying(true)).catch(() => {});
+	};
+
+	const pauseMusic = () => {
+		bgMusicRef.current?.pause();
+		setIsPlaying(false);
 	};
 
 	const toggleMusic = () => {
-		if (audioRef.current) {
-			if (isPlaying) {
-				audioRef.current.pause();
-				setIsPlaying(false);
-			} else {
-				audioRef.current.play();
-				setIsPlaying(true);
-			}
-		}
+		if (isPlaying) { pauseMusic(); } else { playMusic(); }
 	};
 
 	const playClickSound = () => {
-		if (clickAudioRef.current) {
-			clickAudioRef.current.currentTime = 0;
-			clickAudioRef.current.play();
+		if (clickSoundRef.current) {
+			clickSoundRef.current.currentTime = 0;
+			clickSoundRef.current.play().catch(() => {});
 		}
 	};
 
 	return (
-		<MusicContext.Provider value={{ playMusic, toggleMusic, isPlaying, playClickSound }}>
+		<MusicContext.Provider value={{ isPlaying, playMusic, pauseMusic, playClickSound, toggleMusic }}>
 			{children}
-			{/* Hidden Audio Elements */}
-			<audio ref={audioRef} loop>
-				<source src="/musik-bg.opus" type="audio/ogg" />
-				Browser Anda tidak mendukung elemen audio.
-			</audio>
-			<audio ref={clickAudioRef}>
-				<source src="/click.opus" type="audio/ogg" />
-				Browser Anda tidak mendukung elemen audio.
-			</audio>
 		</MusicContext.Provider>
 	);
 };
 
-export const MusicButton = () => {
-	const { toggleMusic, isPlaying, playClickSound } = useMusic();
-
-	const handleClick = () => {
-		playClickSound();
-		toggleMusic();
-	};
-
-	return (
-		<button
-			onClick={handleClick}
-			className="fixed bottom-4 right-4 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200 z-50"
-			title={isPlaying ? "Matikan Musik" : "Hidupkan Musik"}
-		>
-			{isPlaying ? "🔊" : "🔇"}
-		</button>
-	);
+export const useMusic = () => {
+	const context = useContext(MusicContext);
+	if (!context) throw new Error("useMusic must be used within a MusicProvider");
+	return context;
 };
