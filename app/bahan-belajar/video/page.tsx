@@ -12,14 +12,18 @@ const salsa = Salsa({
 });
 
 export default function Home() {
+  // === LOGIKA PREFIX UNTUK GITHUB PAGES ===
+  const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
+
   return (
     <main className={`relative mt-16 text-lg ${fredoka.className}`}>
       
-      {/* BACKGROUND FIXED (TIDAK BERUBAH SAAT SCROLL) */}
+      {/* BACKGROUND FIXED DENGAN PREFIX */}
       <div
         className="fixed inset-0 -z-10"
         style={{
-          backgroundImage: "url('/videobg.png')",
+          // Menggunakan template literals (backticks) untuk menggabungkan prefix dan nama file
+          backgroundImage: `url('${prefix}/videobg.png')`,
           backgroundSize: "cover",
           backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
@@ -54,10 +58,10 @@ export default function Home() {
                   Menulis Teks Deskripsi
                 </h3>
 
-                {/* Embed */}
+                {/* Embed Video YouTube (Tidak perlu prefix karena link eksternal) */}
                 <div className="w-full relative mb-6" style={{ paddingBottom: "56.25%" }}>
                   <iframe
-                    src="https://www.youtube.com/embed/Lw_vEQlP_cs"
+                    src="https://www.youtube.com/embed/N667q8H0hX4"
                     title="Menulis Teks Deskripsi"
                     className="absolute top-0 left-0 w-full h-full rounded-lg"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -71,7 +75,7 @@ export default function Home() {
                 </p>
 
                 <Link
-                  href="https://youtu.be/Lw_vEQlP_cs?si=2jsUeUM6YNIpmeaa"
+                  href="https://youtu.be/N667q8H0hX4?si=9lDAs87WREO7A800"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full text-center bg-red-600 text-white text-2xl font-bold py-4 rounded-xl hover:bg-red-700 transition mb-4"
@@ -82,12 +86,12 @@ export default function Home() {
                 <div className="break-all text-lg text-center">
                   <span className="font-bold">Sumber: </span>
                   <Link
-                    href="https://youtu.be/Lw_vEQlP_cs?si=2jsUeUM6YNIpmeaa"
+                    href="https://www.youtube.com/@usmitachannel8458"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-700 hover:underline"
                   >
-                    https://youtu.be/Lw_vEQlP_cs?si=2jsUeUM6YNIpmeaa
+                    Usmita Channel
                   </Link>
                 </div>
 

@@ -4,10 +4,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Kode ini artinya: 
-  // Jika sedang di-upload ke GitHub (production), gunakan '/Devy-Adelia'
-  // Jika sedang di laptop (development), JANGAN gunakan apa-apa ('')
-  basePath: process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '',
+  // Pastikan ini sesuai dengan nama repository kamu di GitHub
+  basePath: '/Devy-Adelia',
+  assetPrefix: '/Devy-Adelia', // Tambahkan baris ini untuk memperkuat alamat aset
 };
 
 export default nextConfig;

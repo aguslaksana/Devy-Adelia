@@ -11,6 +11,9 @@ const LockIcon = () => (
 );
 
 export default function ChooseGame() {
+  // === LOGIKA PREFIX UNTUK GITHUB PAGES ===
+  const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
+
   // State untuk menyimpan level tertinggi yang sudah selesai
   const [highestLevelCompleted, setHighestLevelCompleted] = useState(0);
   // State untuk mengontrol tampilan modal petunjuk
@@ -28,14 +31,15 @@ export default function ChooseGame() {
   const isLevel2Locked = highestLevelCompleted < 1;
   const isLevel3Locked = highestLevelCompleted < 2;
 
-  // Kelas dasar untuk kartu level (Puzzle Style dengan efek tombol 3D)
+  // Kelas dasar untuk kartu level
   const cardBaseClass = "relative group w-64 h-48 text-white flex flex-col items-center justify-center rounded-xl shadow-xl transition-all duration-200 ease-in-out hover:scale-105 active:scale-95 active:border-b-0 active:translate-y-2 border-4 border-white/40 border-b-8 border-b-black/20";
 
   return (
     <div 
       className="w-full min-h-screen flex flex-col items-center justify-center mx-auto py-10 px-4"
       style={{
-        backgroundImage: "url('/bggame.png')",
+        // MENGGUNAKAN PREFIX AGAR BACKGROUND MUNCUL DI GITHUB
+        backgroundImage: `url('${prefix}/bggame.png')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -66,7 +70,6 @@ export default function ChooseGame() {
             </button>
             <h4 className="text-3xl font-bold text-gray-800 mb-4 text-center">Petunjuk Permainan</h4>
             <div className="flex-grow rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-100">
-              {/* LINK DRIVE TELAH DIPERBARUI KE /preview AGAR BISA DI-EMBED */}
               <iframe
                 className="w-full h-full border-0"
                 src="https://drive.google.com/file/d/1hmWlgQOugMiAE-oy8nK4NvYn_bvwAiyS/preview"

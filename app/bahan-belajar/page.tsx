@@ -35,7 +35,10 @@ interface MenuButtonProps {
 export default function Home() {
   const { playClickSound } = useMusic();
 
-  // === KOMPONEN TOMBOL (VERSI LEBIH RAMPING & PROPORSIONAL) ===
+  // === LOGIKA PREFIX UNTUK GITHUB PAGES ===
+  const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
+
+  // === KOMPONEN TOMBOL ===
   const MenuButton = ({
     href,
     title,
@@ -48,28 +51,21 @@ export default function Home() {
     <Link
       href={href}
       onClick={playClickSound}
-      // Ubah max-w-2xl menjadi max-w-lg (lebih kecil)
       className="group relative w-full max-w-[480px] md:max-w-[520px] transform transition-transform active:scale-[0.98]"
     >
-      {/* Shadow Layer (Lebih tipis) */}
       <div className={`absolute inset-0 rounded-2xl translate-y-1.5 md:translate-y-2 ${shadowColor}`}></div>
 
-      {/* Main Button Layer */}
-      {/* Padding diperkecil (p-4 md:p-5) untuk tampilan lebih compact */}
       <div 
         className={`relative rounded-2xl p-3 md:p-4 flex items-center gap-4 md:gap-5 ${bgGradient} border-[2px] border-white/30 overflow-hidden transition-all duration-300 group-hover:-translate-y-1 shadow-lg`}
       >
-        {/* Dekorasi Shine */}
         <div className="absolute -top-6 -right-6 w-20 h-20 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
 
-        {/* --- Kiri: Lingkaran Angka (Diperkecil) --- */}
         <div className={`flex-shrink-0 w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full shadow-inner ${iconBg} border-[3px] border-white/30 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300`}>
           <span className={`text-white text-xl md:text-2xl font-extrabold ${salsa.className} drop-shadow-sm`}>
             {number}
           </span>
         </div>
 
-        {/* --- Tengah: Teks (Font disesuaikan) --- */}
         <div className="flex flex-col flex-grow z-10 text-left">
           <h3
             className={`text-xl md:text-2xl font-bold text-white leading-none mb-1 ${salsa.className} drop-shadow-sm`}
@@ -81,7 +77,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* --- Kanan: Panah Kecil --- */}
         <div className="hidden sm:flex opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
           <div className="bg-white/20 rounded-full p-1.5 md:p-2 backdrop-blur-sm">
             <svg
@@ -106,19 +101,18 @@ export default function Home() {
 
   return (
     <main
-      // Layout menggunakan justify-center agar konten berada di tengah secara vertikal jika layar tinggi
       className={`relative w-full min-h-screen flex flex-col items-center ${fredoka.className} py-4 overflow-hidden`}
     >
-      {/* BACKGROUND IMAGE */}
+      {/* BACKGROUND IMAGE DENGAN PREFIX */}
       <Image
-        src="/menu.png"
+        src={`${prefix}/menu.png`}
         alt="Latar Belakang Menu"
         fill
         priority
         className="object-cover -z-10 fixed"
       />
 
-      {/* === TOMBOL POJOK KANAN ATAS (Diperkecil & Lebih Rapi) === */}
+      {/* === TOMBOL POJOK KANAN ATAS DENGAN PREFIX === */}
       <div className="absolute top-4 right-4 z-30 flex flex-row md:flex-col gap-3">
         <Link
           href="/bahan-belajar/identitas-penyusun"
@@ -126,7 +120,13 @@ export default function Home() {
           className="bg-white hover:bg-yellow-50 p-2 md:p-2.5 rounded-xl shadow-md active:scale-95 transition-all border border-orange-200"
           title="Identitas Penyusun"
         >
-          <Image src="/identitas.png" alt="Identitas" width={24} height={24} className="w-5 h-5 md:w-6 md:h-6" />
+          <Image 
+            src={`${prefix}/identitas.png`} 
+            alt="Identitas" 
+            width={24} 
+            height={24} 
+            className="w-5 h-5 md:w-6 md:h-6" 
+          />
         </Link>
 
         <Link
@@ -135,20 +135,23 @@ export default function Home() {
           className="bg-white hover:bg-yellow-50 p-2 md:p-2.5 rounded-xl shadow-md active:scale-95 transition-all border border-orange-200"
           title="Petunjuk Penggunaan"
         >
-          <Image src="/maps.gif" alt="Petunjuk" width={24} height={24} className="w-5 h-5 md:w-6 md:h-6" unoptimized />
+          <Image 
+            src={`${prefix}/maps.gif`} 
+            alt="Petunjuk" 
+            width={24} 
+            height={24} 
+            className="w-5 h-5 md:w-6 md:h-6" 
+            unoptimized 
+          />
         </Link>
       </div>
 
-      {/* CONTAINER TENGAH UNTUK JUDUL & MENU */}
       <div className="flex flex-col items-center justify-center w-full min-h-[90vh] gap-6 md:gap-8">
         
-        {/* === JUDUL UTAMA (Skala Disesuaikan) === */}
         <div className="relative z-10 text-center animate-fade-in-down mt-4 md:mt-0">
           <div className="inline-block relative group cursor-default">
-            {/* Background Glow */}
             <div className="absolute inset-0 bg-yellow-400 rounded-full blur-lg opacity-50 transform scale-105 group-hover:scale-110 transition-transform"></div>
             
-            {/* Badge Judul */}
             <div className="relative bg-[#FF9F1C] border-[4px] border-white shadow-md rounded-full py-2 px-10 md:py-3 md:px-14 transform -rotate-2 hover:rotate-0 transition-transform duration-300">
               <h1
                 className={`text-3xl md:text-5xl font-extrabold text-white tracking-wider ${salsa.className}`}
@@ -160,10 +163,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* === LIST MENU VERTICAL (Jarak Dirapatkan) === */}
         <div className="relative z-10 flex flex-col items-center gap-4 w-full px-4">
-          
-          {/* Tombol 1 */}
           <MenuButton
             href="/bahan-belajar/cp-dan-tp"
             title="CP dan TP"
@@ -174,7 +174,6 @@ export default function Home() {
             iconBg="bg-white/20"
           />
 
-          {/* Tombol 2 */}
           <MenuButton
             href="/bahan-belajar/video"
             title="Video Materi"
@@ -185,7 +184,6 @@ export default function Home() {
             iconBg="bg-white/20"
           />
 
-          {/* Tombol 3 */}
           <MenuButton
             href="/bahan-belajar/permainan"
             title="Game"
@@ -195,7 +193,6 @@ export default function Home() {
             shadowColor="bg-[#320096]"
             iconBg="bg-white/20"
           />
-          
         </div>
       </div>
     </main>
