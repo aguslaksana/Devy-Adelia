@@ -12,7 +12,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html className="bg-white font-sans leading-normal tracking-normal">
+<<<<<<< HEAD
 			<title>Game Deskripfun</title>
+=======
+			<title>Game deskripfun</title>
+>>>>>>> a5b0ac5e68094f2a11141b378d5385f1f7c3ea5c
 			<body className="flex flex-col min-h-screen">
 				<OrientationChecker />
 				<MusicProvider>
