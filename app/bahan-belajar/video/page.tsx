@@ -58,10 +58,10 @@ export default function Home() {
                   Menulis Teks Deskripsi
                 </h3>
 
-                {/* Embed Video YouTube (Tidak perlu prefix karena link eksternal) */}
+                {/* Embed Video YouTube */}
                 <div className="w-full relative mb-6" style={{ paddingBottom: "56.25%" }}>
                   <iframe
-                    src="https://www.youtube.com/embed/N667q8H0hX4"
+                    src="https://www.youtube.com/embed/Lw_vEQlP_cs"
                     title="Menulis Teks Deskripsi"
                     className="absolute top-0 left-0 w-full h-full rounded-lg"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -75,7 +75,7 @@ export default function Home() {
                 </p>
 
                 <Link
-                  href="https://youtu.be/N667q8H0hX4?si=9lDAs87WREO7A800"
+                  href="https://www.youtube.com/watch?v=Lw_vEQlP_cs"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full text-center bg-red-600 text-white text-2xl font-bold py-4 rounded-xl hover:bg-red-700 transition mb-4"

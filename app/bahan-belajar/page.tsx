@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fredoka, Kalam, Roboto, Salsa } from "next/font/google";
@@ -33,7 +34,17 @@ interface MenuButtonProps {
 }
 
 export default function Home() {
-  const { playClickSound } = useMusic();
+  const { playClickSound, playMusic, pauseMusic } = useMusic();
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const toggleMusic = () => {
+    if (isPlaying) {
+      pauseMusic();
+    } else {
+      playMusic();
+    }
+    setIsPlaying(!isPlaying);
+  };
 
   // === LOGIKA PREFIX UNTUK GITHUB PAGES ===
   const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
@@ -195,6 +206,20 @@ export default function Home() {
           />
         </div>
       </div>
+
+      {/* Tombol Musik (Pojok Kanan Bawah) */}
+      <button
+        onClick={toggleMusic}
+        className="absolute bottom-5 right-5 z-50 bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl shadow-xl hover:scale-110 transition-all duration-300 border-2 border-white/30"
+      >
+        {isPlaying ? (
+          // Ikon Speaker ON
+          <span className="text-3xl filter drop-shadow-sm">🔊</span>
+        ) : (
+          // Ikon Speaker OFF
+          <span className="text-3xl filter drop-shadow-sm">🔇</span>
+        )}
+      </button>
     </main>
   );
 }

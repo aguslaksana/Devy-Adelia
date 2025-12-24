@@ -4,9 +4,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Pastikan ini sesuai dengan nama repository kamu di GitHub
-  basePath: '/Devy-Adelia',
-  assetPrefix: '/Devy-Adelia', // Tambahkan baris ini untuk memperkuat alamat aset
+  // Hanya gunakan basePath dan assetPrefix untuk production (GitHub Pages)
+  ...(process.env.NODE_ENV === 'production' && {
+    basePath: '/Devy-Adelia',
+    assetPrefix: '/Devy-Adelia',
+  }),
 };
 
 export default nextConfig;

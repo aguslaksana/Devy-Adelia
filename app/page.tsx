@@ -46,17 +46,17 @@ export default function Home() {
 					className="object-cover -z-10"
 				/>
 
-				{/* Tombol Musik (Pojok Kanan Atas) */}
+				{/* Tombol Musik (Pojok Kanan Bawah) */}
 				<button
 					onClick={toggleMusic}
-					className="absolute top-5 right-5 z-50 bg-white/80 p-3 rounded-full shadow-lg hover:scale-110 transition-transform"
+					className="absolute bottom-5 right-5 z-50 bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl shadow-xl hover:scale-110 transition-all duration-300 border-2 border-white/30"
 				>
 					{isPlaying ? (
 						// Ikon Speaker ON
-						<span className="text-2xl">🔊</span>
+						<span className="text-3xl filter drop-shadow-sm">🔊</span>
 					) : (
 						// Ikon Speaker OFF
-						<span className="text-2xl">X 🔇</span>
+						<span className="text-3xl filter drop-shadow-sm">🔇</span>
 					)}
 				</button>
 

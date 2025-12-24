@@ -44,10 +44,11 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 	};
 
 	const playClickSound = () => {
-		if (clickSoundRef.current) {
-			clickSoundRef.current.currentTime = 0;
-			clickSoundRef.current.play().catch(() => {});
-		}
+		// Temporarily disabled since click.opus file doesn't exist
+		// if (clickSoundRef.current) {
+		// 	clickSoundRef.current.currentTime = 0;
+		// 	clickSoundRef.current.play().catch(() => {});
+		// }
 	};
 
 	return (
