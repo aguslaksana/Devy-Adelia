@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image"; 
 import { useMusic } from "./music-context";
@@ -10,8 +10,14 @@ export default function Home() {
 	const { playMusic, pauseMusic, playClickSound } = useMusic();
 	const [isPlaying, setIsPlaying] = useState(false);
 
-	// Logika prefix agar gambar tidak hilang di Localhost maupun GitHub
-	const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
+	// === LOGIKA PREFIX PINTAR ===
+	// 1. Cek apakah ini di Vercel (lewat environment variable)
+	// 2. Jika bukan Vercel dan ini mode production, berarti ini GitHub Pages (/Devy-Adelia)
+	// 3. Jika sedang development (npm run dev), prefix kosong.
+	const isVercel = process.env.NEXT_PUBLIC_VERCEL === 'true';
+	const isProd = process.env.NODE_ENV === 'production';
+	
+	const prefix = isVercel ? '' : (isProd ? '/Devy-Adelia' : '');
 
 	const handleStart = () => {
 		playClickSound();
@@ -21,7 +27,7 @@ export default function Home() {
 	};
 
 	const toggleMusic = (e: React.MouseEvent) => {
-		e.stopPropagation(); // Agar tidak memicu handleStart saat klik tombol musik
+		e.stopPropagation(); 
 		if (isPlaying) {
 			pauseMusic();
 		} else {
@@ -37,7 +43,7 @@ export default function Home() {
 				onClick={handleStart}
 				className="relative w-full h-screen flex justify-center items-end cursor-pointer overflow-hidden"
 			>
-				{/* Latar Belakang Gambar */}
+				{/* Latar Belakang Gambar dengan Prefix Pintar */}
 				<Image
 					src={`${prefix}/bgstart.png`}
 					alt="Latar Belakang Start"
@@ -46,21 +52,19 @@ export default function Home() {
 					className="object-cover -z-10"
 				/>
 
-				{/* Tombol Musik (Pojok Kanan Bawah) */}
+				{/* Tombol Musik */}
 				<button
 					onClick={toggleMusic}
 					className="absolute bottom-5 right-5 z-50 bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl shadow-xl hover:scale-110 transition-all duration-300 border-2 border-white/30"
 				>
 					{isPlaying ? (
-						// Ikon Speaker ON
 						<span className="text-3xl filter drop-shadow-sm">🔊</span>
 					) : (
-						// Ikon Speaker OFF
 						<span className="text-3xl filter drop-shadow-sm">🔇</span>
 					)}
 				</button>
 
-				{/* Tombol Utama - Pastikan z-index tinggi agar kelihatan */}
+				{/* Tombol Utama */}
 				<div
 					className="relative z-20 mb-32 bg-orange-500 text-white text-2xl shadow-xl font-bold py-4 px-12 rounded-2xl transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-105 animate-bounce select-none border-4 border-white"
 				>
