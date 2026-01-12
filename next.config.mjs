@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
-const isVercel = process.env.VERCEL === 'true'; // Cek apakah sedang di Vercel
+const isProd = process.env.NODE_ENV === 'production';
 
 const nextConfig = {
   output: 'export',
-  // Jika di Vercel, basePath kosong. Jika bukan (GitHub), pakai /Devy-Adelia
-  basePath: isVercel ? '' : '/Devy-Adelia', 
+  // basePath hanya aktif kalau sedang build production (buat di-upload ke GitHub)
+  // Kalau sedang npm run dev, basePath kosong agar bisa diakses di localhost:3000 langsung
+  basePath: isProd ? '/Devy-Adelia' : '', 
   images: {
     unoptimized: true,
   },

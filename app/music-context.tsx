@@ -13,16 +13,20 @@ type MusicContextType = {
 const MusicContext = createContext<MusicContextType | undefined>(undefined);
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+	// Pastikan folder repository di GitHub bernama 'Devy-Adelia' jika ingin menggunakan prefix ini
 	const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
 	const [isPlaying, setIsPlaying] = useState(false);
+	
 	const bgMusicRef = useRef<HTMLAudioElement | null>(null);
 	const clickSoundRef = useRef<HTMLAudioElement | null>(null);
 
 	useEffect(() => {
+		// Inisialisasi Audio Musik Latar
 		bgMusicRef.current = new Audio(`${prefix}/musik-bg.opus`);
 		bgMusicRef.current.loop = true;
 		bgMusicRef.current.volume = 0.4;
 
+		// Inisialisasi Audio Efek Klik
 		clickSoundRef.current = new Audio(`${prefix}/click.opus`);
 		
 		return () => {
@@ -31,24 +35,34 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 	}, [prefix]);
 
 	const playMusic = () => {
-		bgMusicRef.current?.play().then(() => setIsPlaying(true)).catch(() => {});
+		if (bgMusicRef.current) {
+			bgMusicRef.current.play()
+				.then(() => setIsPlaying(true))
+				.catch((err) => console.warn("Autoplay diblokir browser, user harus klik dulu:", err));
+		}
 	};
 
 	const pauseMusic = () => {
-		bgMusicRef.current?.pause();
-		setIsPlaying(false);
+		if (bgMusicRef.current) {
+			bgMusicRef.current.pause();
+			setIsPlaying(false);
+		}
 	};
 
 	const toggleMusic = () => {
-		if (isPlaying) { pauseMusic(); } else { playMusic(); }
+		if (isPlaying) { 
+			pauseMusic(); 
+		} else { 
+			playMusic(); 
+		}
 	};
 
 	const playClickSound = () => {
-		// Temporarily disabled since click.opus file doesn't exist
-		// if (clickSoundRef.current) {
-		// 	clickSoundRef.current.currentTime = 0;
-		// 	clickSoundRef.current.play().catch(() => {});
-		// }
+		// SEKARANG SUDAH AKTIF
+		if (clickSoundRef.current) {
+			clickSoundRef.current.currentTime = 0; // Reset ke awal agar bisa diklik berkali-kali dengan cepat
+			clickSoundRef.current.play().catch(() => {});
+		}
 	};
 
 	return (
