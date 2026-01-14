@@ -22,7 +22,6 @@ export default function Home() {
   const { playClickSound, toggleMusic, isPlaying } = useMusic();
   const [isPortrait, setIsPortrait] = useState(false);
   
-  // State untuk Modal
   const [activeModal, setActiveModal] = useState<"identitas" | "petunjuk" | null>(null);
 
   useEffect(() => {
@@ -40,13 +39,12 @@ export default function Home() {
     };
   }, []);
 
+  // Prefix hanya untuk Image atau background-image manual
   const prefix = process.env.NODE_ENV === "production" ? "/Devy-Adelia" : "";
 
-  // Komponen Modal yang disesuaikan untuk Embed Dokumen
   const Modal = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 md:p-6 bg-black/70 backdrop-blur-sm">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden border-4 border-[#FF9F1C] animate-in zoom-in duration-300">
-        {/* Header Modal */}
         <div className="bg-[#FF9F1C] py-3 px-6 flex justify-between items-center">
           <h2 className={`${salsa.className} text-white text-xl md:text-2xl font-bold`}>{title}</h2>
           <button 
@@ -57,20 +55,18 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Area Content (Embed Google Drive) */}
         <div className="flex-grow w-full bg-gray-100 relative">
           {children}
         </div>
 
-        {/* Footer Modal */}
         <div className="p-3 bg-white flex justify-center border-t border-gray-200">
-          <Link 
-            href="/bahan-belajar" 
+          {/* PERBAIKAN: Gunakan button untuk menutup modal agar tidak pindah halaman dan 404 */}
+          <button 
             onClick={() => { playClickSound(); setActiveModal(null); }}
             className="bg-[#FF9F1C] hover:bg-[#ff8c00] text-white px-10 py-2 rounded-full font-bold shadow-lg transition-all active:scale-95 text-sm md:text-base"
           >
-            Kembali ke Bahan Belajar
-          </Link>
+            Tutup Petunjuk
+          </button>
         </div>
       </div>
     </div>
@@ -114,7 +110,6 @@ export default function Home() {
 
       <Image src={`${prefix}/menu.png`} alt="Menu BG" fill priority className="object-cover -z-10 fixed" />
 
-      {/* Tombol Navigasi Kanan Atas */}
       <div className="absolute top-4 right-4 z-30 flex gap-3">
         <button 
           onClick={() => { playClickSound(); setActiveModal("identitas"); }} 
@@ -130,7 +125,6 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Render Modal Berdasarkan State */}
       {activeModal === "identitas" && (
         <Modal title="IDENTITAS PENGEMBANG">
           <iframe 
@@ -159,9 +153,10 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 flex flex-col items-center gap-4 w-full px-4">
-          <MenuButton href="/bahan-belajar/cp-dan-tp" title="CP dan TP" desc="Capaian & Tujuan Pembelajaran" number="01" bgGradient="bg-gradient-to-r from-[#00C6FF] to-[#0072FF]" shadowColor="bg-[#005bb5]" iconBg="bg-white/20" />
-          <MenuButton href="/bahan-belajar/video" title="Materi Pembelajaran" desc="Video & Materi Interaktif" number="02" bgGradient="bg-gradient-to-r from-[#FF512F] to-[#DD2476]" shadowColor="bg-[#a30f45]" iconBg="bg-white/20" />
-          <MenuButton href="/bahan-belajar/permainan" title="Game" desc="Mainkan misi sambil belajar" number="03" bgGradient="bg-gradient-to-r from-[#8E2DE2] to-[#4A00E0]" shadowColor="bg-[#320096]" iconBg="bg-white/20" />
+          {/* PERBAIKAN: Tambahkan "/" di akhir href agar folder terbaca dengan benar di hosting */}
+          <MenuButton href="/bahan-belajar/cp-dan-tp/" title="CP dan TP" desc="Capaian & Tujuan Pembelajaran" number="01" bgGradient="bg-gradient-to-r from-[#00C6FF] to-[#0072FF]" shadowColor="bg-[#005bb5]" iconBg="bg-white/20" />
+          <MenuButton href="/bahan-belajar/video/" title="Materi Pembelajaran" desc="Video & Materi Interaktif" number="02" bgGradient="bg-gradient-to-r from-[#FF512F] to-[#DD2476]" shadowColor="bg-[#a30f45]" iconBg="bg-white/20" />
+          <MenuButton href="/bahan-belajar/permainan/" title="Game" desc="Mainkan misi sambil belajar" number="03" bgGradient="bg-gradient-to-r from-[#8E2DE2] to-[#4A00E0]" shadowColor="bg-[#320096]" iconBg="bg-white/20" />
         </div>
       </div>
 

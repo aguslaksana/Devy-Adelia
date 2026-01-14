@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 import { Fredoka, Salsa } from "next/font/google";
 
 const fredoka = Fredoka({ weight: ["400", "700"], subsets: ["latin"] });
@@ -70,7 +70,7 @@ const LEVEL_3_GAMES: GameData[] = [
     src: "https://jigex.com/XqWWt",
     keywords: [
       { label: "Identitas & Daerah", words: ["Tari Tortor", "suku Batak", "Sumatera Utara", "Tapanuli", "identitas Batak", "tanah batak", "bona pasogit", "batak toba", "khas", "budaya"] },
-      { label: "Busana", words: ["kain ulos", "ulos sadum", "ulos ragi hotang", "tenun tangan", "benang merah", "benang hitam", "benang putih", "motif ragi ni huta", "rumbai ulos", "ikat kepala", "sortali", "hiasan kepala emas", "busana adat", "perhiasan emas", "kalung motif", "gelang perak", "tekstur kain tenun", "anyaman benang", "baju"] },
+      { label: "Busana", words: ["kain ulos", "ulos sadum", "ulos ragi hotang", "tenun tangan", "benang merah", "benang hitam", "benang putih", "motif ragi ni huta", "rumbai ulos", "ikat kepala", "sortali", "hiasan kepala emas", "busana adat", "perhiasan emas", "kalung motif", "gelang perak", "tekstur kain tenun", "anyaman mengembang", "baju"] },
       { label: "Gerakan", words: ["manortor", "gerakan tangan", "telapak tangan terbuka", "gerakan bahu", "hentakan kaki", "ritme teratur", "gerakan tenang", "gerak simetris", "posisi tegak", "tatapan lurus", "gerak ritmis", "berbaris", "rapi", "gerakan"] },
       { label: "Musik & Alat", words: ["gondang sabangunan", "ogung", "sarune bolon", "taganing", "hesek", "suara perkusi", "irama", "musik", "lagu", "gamelan"] },
       { label: "Nilai & Acara", words: ["sakral", "upacara adat", "pesta horja", "perkawinan adat", "upacara kematian", "penyambutan tamu", "ungapan syukur", "kearifan lokal", "leluhur", "dalihan na tolu", "rasa hormat", "wibawa", "nuansa magis", "kebersamaan", "pesona danau toba", "indah", "memukau", "tampil"] }
@@ -126,18 +126,11 @@ export default function PermainanPageLevel3() {
     return () => clearInterval(timer);
   }, [timeLeft, currentView, isSubmitted]);
 
-  // MENGHITUNG JUMLAH KATA KUNCI UNIK YANG DITEMUKAN
   const wordsFoundCount = useMemo(() => {
     const input = description.toLowerCase();
     if (!input) return 0;
-    
-    // Ambil semua kata kunci yang mungkin ada di game ini
     const allPossibleWords = LEVEL_3_GAMES[activeGameIndex].keywords.flatMap(k => k.words);
-    
-    // Cari kata apa saja yang ada di dalam input user
     const matches = allPossibleWords.filter(word => input.includes(word.toLowerCase()));
-    
-    // Gunakan Set untuk memastikan hanya kata unik yang dihitung (mencegah spam kata yang sama)
     return new Set(matches).size;
   }, [description, activeGameIndex]);
 
@@ -155,7 +148,6 @@ export default function PermainanPageLevel3() {
     const input = description.trim().toLowerCase();
     if (input.length < 5 && timeLeft > 0) return alert("Tuliskan deskripsi yang lebih jelas!");
 
-    // TARGET 5 KATA UNTUK SKOR 100
     const finalScore = Math.min(Math.round((wordsFoundCount / 5) * 100), 100);
     
     setScore(finalScore);
@@ -181,7 +173,8 @@ export default function PermainanPageLevel3() {
     <div className={`relative w-full bg-[#F0FDF4] ${fredoka.className} min-h-screen pt-20 pb-10`}>
       {currentView === "selection" && (
         <div className="container mx-auto px-4 flex flex-col items-center animate-in fade-in duration-500">
-          <button onClick={() => router.push("/bahan-belajar/permainan")} className="md:absolute top-8 left-8 bg-white text-emerald-600 px-6 py-2 rounded-full font-bold shadow-md border-2 border-emerald-500 active:scale-95 transition-all">⬅ Menu Utama</button>
+          {/* PERBAIKAN: Jalur navigasi ditambah "/" di akhir agar tidak 404 */}
+          <button onClick={() => router.push("/bahan-belajar/permainan/")} className="md:absolute top-8 left-8 bg-white text-emerald-600 px-6 py-2 rounded-full font-bold shadow-md border-2 border-emerald-500 active:scale-95 transition-all">⬅ Menu Utama</button>
           
           <h1 className={`text-4xl md:text-5xl text-emerald-700 font-bold mb-2 ${salsa.className}`}>LEVEL 3</h1>
           <div className="bg-emerald-100 border-2 border-emerald-300 rounded-full px-8 py-2 mb-8 text-emerald-800 font-bold shadow-sm italic text-sm text-center">
@@ -247,7 +240,7 @@ export default function PermainanPageLevel3() {
                     <span className="text-5xl">{rewardData.icon}</span>
                     <div className="text-left">
                       <div className="text-xl font-black">{rewardData.title}</div>
-                      <div className="text-[10px] bg-white/60 px-3 py-0.5 rounded-full font-bold mt-1 inline-block uppercase">{rewardData.badge}</div>
+                      <div className="text-[10px] bg-white/60 px-3 py-0.5 rounded-full font-bold mt-1 inline-block uppercase tracking-wider">{rewardData.badge}</div>
                     </div>
                     <div className="ml-auto text-3xl font-black">{score}%</div>
                   </div>

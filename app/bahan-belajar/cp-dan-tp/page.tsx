@@ -4,14 +4,14 @@ import React, { useState } from "react";
 import Link from "next/link";
 
 function CpDanTpPage() {
+  // Prefix HANYA digunakan untuk aset statis seperti gambar/file di folder public
   const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
   
-  // State untuk mengontrol modal (default terbuka)
   const [showModal, setShowModal] = useState(true);
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center p-4">
-      {/* Background Page (Agar tidak kosong di belakang modal) */}
+      {/* Background Page menggunakan prefix karena ini adalah file gambar di folder public */}
       <div
         className="fixed inset-0 -z-10"
         style={{
@@ -35,9 +35,9 @@ function CpDanTpPage() {
                 <p className="text-sm text-orange-600">Capaian & Tujuan Pembelajaran</p>
               </div>
               
-              {/* Tombol X di Pojok kanan atas modal */}
+              {/* JANGAN tambahkan prefix di sini, Next.js otomatis menambahkannya */}
               <Link 
-                href={`${prefix}/bahan-belajar`}
+                href="/bahan-belajar/"
                 className="bg-red-500 hover:bg-red-600 text-white w-10 h-10 flex items-center justify-center rounded-full shadow-lg transition-transform hover:scale-110"
               >
                 ✕
@@ -56,8 +56,9 @@ function CpDanTpPage() {
 
             {/* Footer Modal (Tombol Kembali Utama) */}
             <div className="p-4 bg-orange-50 border-t-4 border-orange-100 flex justify-center">
+              {/* JANGAN tambahkan prefix di sini */}
               <Link
-                href={`${prefix}/bahan-belajar`}
+                href="/bahan-belajar/"
                 className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-bold shadow-lg transition-all flex items-center gap-2 hover:scale-105"
               >
                 ⬅ Kembali ke Main Menu

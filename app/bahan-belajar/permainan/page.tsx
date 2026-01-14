@@ -11,7 +11,7 @@ const LockIcon = () => (
 );
 
 export default function ChooseGame() {
-  // === LOGIKA PREFIX UNTUK GITHUB PAGES ===
+  // === LOGIKA PREFIX UNTUK GITHUB PAGES (HANYA UNTUK ASET STATIS) ===
   const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
 
   // State untuk menyimpan level tertinggi yang sudah selesai
@@ -45,8 +45,9 @@ export default function ChooseGame() {
       }}
     >
       {/* === TOMBOL KEMBALI KE PILIHAN BAHAN AJAR === */}
+      {/* PERBAIKAN: Tambah "/" di akhir href */}
       <Link 
-        href="/bahan-belajar" 
+        href="/bahan-belajar/" 
         className="md:absolute top-6 left-6 mb-6 md:mb-0 flex items-center gap-2 bg-white/95 text-orange-600 font-bold py-3 px-6 rounded-full shadow-lg hover:bg-orange-50 transition-all border-2 border-orange-500 active:scale-95 group z-10"
       >
         <span className="group-hover:-translate-x-1 transition-transform">⬅</span>
@@ -92,7 +93,8 @@ export default function ChooseGame() {
         
         {/* === LEVEL 1 === */}
         <div className="flex flex-col items-center text-center bg-[#F5F5DC]/90 backdrop-blur-sm p-4 rounded-3xl shadow-xl w-full md:w-72 border-2 border-white/60">
-          <Link href="/bahan-belajar/permainan/1" className={`${cardBaseClass} bg-gradient-to-br from-orange-400 to-red-500`}>
+          {/* PERBAIKAN: Tambah "/" di akhir href */}
+          <Link href="/bahan-belajar/permainan/1/" className={`${cardBaseClass} bg-gradient-to-br from-orange-400 to-red-500`}>
             <span className="text-6xl mb-1 transform group-hover:rotate-12 transition-transform duration-300">🧩</span>
             <div className="flex flex-col items-center">
               <span className="text-2xl font-black uppercase tracking-wide">Level 1</span>
@@ -112,7 +114,8 @@ export default function ChooseGame() {
               <span className="text-xs text-gray-200 mt-1">Selesaikan Level 1</span>
             </div>
           ) : (
-            <Link href="/bahan-belajar/permainan/2" className={`${cardBaseClass} bg-gradient-to-br from-purple-400 to-indigo-600`}>
+            /* PERBAIKAN: Tambah "/" di akhir href */
+            <Link href="/bahan-belajar/permainan/2/" className={`${cardBaseClass} bg-gradient-to-br from-purple-400 to-indigo-600`}>
               <span className="text-6xl mb-1 transform group-hover:rotate-12 transition-transform duration-300">🧩</span>
               <div className="flex flex-col items-center">
                 <span className="text-2xl font-black uppercase tracking-wide">Level 2</span>
@@ -133,7 +136,8 @@ export default function ChooseGame() {
               <span className="text-xs text-gray-200 mt-1">Selesaikan Level 2</span>
             </div>
           ) : (
-            <Link href="/bahan-belajar/permainan/3" className={`${cardBaseClass} bg-gradient-to-br from-teal-400 to-green-600`}>
+            /* PERBAIKAN: Tambah "/" di akhir href */
+            <Link href="/bahan-belajar/permainan/3/" className={`${cardBaseClass} bg-gradient-to-br from-teal-400 to-green-600`}>
               <span className="text-6xl mb-1 transform group-hover:rotate-12 transition-transform duration-300">🧩</span>
               <div className="flex flex-col items-center">
                 <span className="text-2xl font-black uppercase tracking-wide">Level 3</span>

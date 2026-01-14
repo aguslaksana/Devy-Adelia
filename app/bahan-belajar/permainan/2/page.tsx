@@ -183,7 +183,8 @@ export default function PermainanPageLevel2() {
       
       {currentView === "selection" ? (
         <div className="container mx-auto px-4 flex flex-col items-center animate-in fade-in duration-500">
-          <button onClick={() => router.push("/bahan-belajar/permainan")} className="md:absolute top-8 left-8 bg-white text-cyan-600 px-6 py-2 rounded-full font-bold shadow-md border-2 border-cyan-500 hover:scale-105 transition-all z-20">⬅ Menu Utama</button>
+          {/* PERBAIKAN: Jalur navigasi ditambah "/" di akhir agar tidak 404 */}
+          <button onClick={() => router.push("/bahan-belajar/permainan/")} className="md:absolute top-8 left-8 bg-white text-cyan-600 px-6 py-2 rounded-full font-bold shadow-md border-2 border-cyan-500 hover:scale-105 transition-all z-20">⬅ Menu Utama</button>
           
           <h1 className={`text-4xl md:text-5xl text-cyan-700 font-bold mb-2 ${salsa.className}`}>LEVEL 2</h1>
           <div className="bg-cyan-100 border-2 border-cyan-300 rounded-full px-8 py-2 mb-8 text-cyan-800 font-bold shadow-sm italic text-sm text-center">
@@ -199,14 +200,12 @@ export default function PermainanPageLevel2() {
               return (
                 <button key={game.id} onClick={() => startGame(i)} className={`group relative bg-white border-4 rounded-[2.5rem] p-8 shadow-xl transition-all hover:-translate-y-2 hover:scale-105 active:scale-95 ${isPerfect ? 'border-yellow-400' : 'border-cyan-200'}`}>
                   
-                  {/* PIALA KEDIP HANYA JIKA 100 */}
                   {isPerfect && (
                     <div className="absolute -top-7 -left-5 bg-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg border-4 border-yellow-400 text-4xl animate-bounce z-10">
                       <span className="animate-pulse">🏆</span>
                     </div>
                   )}
 
-                  {/* LAMPU JIKA SUDAH MULAI TAPI BELUM 100 */}
                   {realScore > 0 && realScore < 100 && (
                     <div className="absolute -top-7 -left-5 bg-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg border-4 border-blue-400 text-4xl z-10">
                       💡
@@ -269,7 +268,7 @@ export default function PermainanPageLevel2() {
                     <span className="text-5xl animate-bounce">{rewardData.icon}</span>
                     <div>
                       <div className={`text-xl font-black ${rewardData.textColor}`}>{rewardData.title}</div>
-                      <div className="text-[9px] bg-white/60 px-3 py-0.5 rounded-full font-bold mt-1 inline-block uppercase">{rewardData.badge}</div>
+                      <div className="text-[9px] bg-white/60 px-3 py-0.5 rounded-full font-bold mt-1 inline-block uppercase tracking-wider">{rewardData.badge}</div>
                     </div>
                   </div>
                   <p className="text-xs font-medium mb-4 italic text-center text-gray-700">{rewardData.msg}</p>

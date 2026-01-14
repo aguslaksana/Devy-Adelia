@@ -7,7 +7,7 @@ const fredoka = Fredoka({ weight: "400", subsets: ["latin"] });
 const salsa = Salsa({ weight: "400", subsets: ["latin"] });
 
 export default function MateriPembelajaranPage() {
-  // Prefix ini sangat penting agar link tidak 404 saat di-online-kan (GitHub Pages)
+  // Prefix HANYA digunakan untuk file fisik di folder public (gambar/video)
   const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
 
   return (
@@ -15,6 +15,7 @@ export default function MateriPembelajaranPage() {
        <div
         className="fixed inset-0 -z-10"
         style={{
+          // Tetap gunakan prefix untuk file gambar di folder public
           backgroundImage: `url('${prefix}/videobg.png')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -29,14 +30,14 @@ export default function MateriPembelajaranPage() {
         </div>
 
         <div className="bg-white rounded-[2rem] p-4 md:p-8 shadow-2xl border-[6px] border-orange-300 flex flex-col gap-10">
-          {/* VIDEO YOUTUBE */}
+          {/* VIDEO MATERI */}
           <div>
             <h2 className={`text-2xl font-bold text-orange-600 mb-4 ${salsa.className}`}>🎬 Video Penjelasan</h2>
             <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-lg border-2 border-orange-100">
+              {/* Masukkan Link Embed Video Anda di sini */}
               <iframe
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/kAeNUTt8AhM
-" 
+                src="https://www.youtube.com/embed/kAeNUTt8AhM" 
                 title="Video Materi"
                 allowFullScreen
               />
@@ -60,8 +61,9 @@ export default function MateriPembelajaranPage() {
 
         {/* TOMBOL KEMBALI KE MAIN MENU */}
         <div className="flex justify-center mt-10">
+          {/* PERBAIKAN: JANGAN pakai ${prefix} di dalam Link, tambahkan "/" di akhir */}
           <Link 
-            href={`${prefix}/bahan-belajar`} 
+            href="/bahan-belajar/" 
             className="bg-orange-500 text-white px-10 py-3 rounded-full font-bold shadow-xl hover:scale-105 transition-all text-center"
           >
             ⬅ Kembali ke Main Menu

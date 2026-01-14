@@ -87,7 +87,6 @@ export default function PermainanPageLevel1() {
   const [score, setScore] = useState<number>(0);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [rewardData, setRewardData] = useState<{ icon: string, title: string, badge: string, msg: string, color: string } | null>(null);
-  const [evaluation, setEvaluation] = useState<{ word: string, found: boolean }[]>([]);
   const [savedScores, setSavedScores] = useState<{ [key: number]: number }>({});
   const [timeLeft, setTimeLeft] = useState<number>(180);
 
@@ -114,7 +113,6 @@ export default function PermainanPageLevel1() {
     setIsSubmitted(false);
     setTimeLeft(180);
     setRewardData(null);
-    setEvaluation([]);
   };
 
   const checkAnswer = () => {
@@ -122,14 +120,9 @@ export default function PermainanPageLevel1() {
     if (!input && timeLeft > 0) return alert("Tuliskan deskripsi hasil observasimu dulu!");
 
     const currentGame = LEVEL_1_GAMES[activeGameIndex];
-    
-    // Flatten semua kata kunci menjadi satu list panjang
     const allWords = Array.from(new Set(currentGame.keywords.flatMap(k => k.words)));
-    
-    // Cari kata kunci apa saja yang ada di input pengguna
     const wordsFound = allWords.filter(word => input.includes(word.toLowerCase()));
 
-    // Logika Inti: 3 Kata Kunci Apapun = 100
     let finalScore = 0;
     if (wordsFound.length >= 3) {
       finalScore = 100;
@@ -140,7 +133,6 @@ export default function PermainanPageLevel1() {
     setScore(finalScore);
     setIsSubmitted(true);
     
-    // Simpan skor
     const prevBest = savedScores[activeGameIndex] || 0;
     if (finalScore > prevBest) {
       const newScores = { ...savedScores, [activeGameIndex]: finalScore };
@@ -148,18 +140,13 @@ export default function PermainanPageLevel1() {
       localStorage.setItem("level1_all_scores", JSON.stringify(newScores));
     }
 
-    // Feedback
     if (finalScore === 100) {
       setRewardData({ icon: "🏆", title: "LULUS!", badge: "PAKAR BUDAYA", msg: `Hebat! Kamu menemukan ${wordsFound.length} kata kunci penting.`, color: "bg-yellow-50 border-yellow-400 text-yellow-700" });
     } else {
       setRewardData({ icon: "💡", title: "COBA LAGI", badge: "PEMBELAJAR", msg: `Baru ditemukan ${wordsFound.length} kata kunci. Butuh minimal 3 untuk lulus.`, color: "bg-blue-50 border-blue-400 text-blue-700" });
     }
-
-    // Ambil beberapa contoh kata untuk evaluasi (agar tidak kepanjangan)
-    setEvaluation(wordsFound.slice(0, 5).map(w => ({ word: w, found: true })));
   };
 
-  // Hitung jumlah kata kunci yang terdeteksi secara live
   const getLiveMatchCount = () => {
     const input = description.toLowerCase();
     const allWords = LEVEL_1_GAMES[activeGameIndex].keywords.flatMap(k => k.words);
@@ -173,10 +160,11 @@ export default function PermainanPageLevel1() {
     <div className={`relative w-full bg-[#FFF8DC] ${fredoka.className} min-h-screen pt-20 pb-10`}>
       {currentView === "selection" && (
         <div className="container mx-auto px-4 flex flex-col items-center animate-in fade-in duration-500">
-          <button onClick={() => router.push("/bahan-belajar/permainan")} className="md:absolute top-0 left-4 mb-6 md:mb-0 bg-white text-orange-600 px-6 py-2 rounded-full font-bold shadow-md border-2 border-orange-500 active:scale-95 transition-all">⬅ Menu Utama</button>
+          {/* PERBAIKAN: Jalur navigasi ditambah "/" di akhir */}
+          <button onClick={() => router.push("/bahan-belajar/permainan/")} className="md:absolute top-0 left-4 mb-6 md:mb-0 bg-white text-orange-600 px-6 py-2 rounded-full font-bold shadow-md border-2 border-orange-500 active:scale-95 transition-all">⬅ Menu Utama</button>
           
           <h1 className={`text-4xl md:text-5xl text-orange-600 font-bold mb-2 ${salsa.className}`}>LEVEL 1</h1>
-          <div className="bg-orange-100 border-2 border-orange-300 rounded-full px-8 py-2 mb-8 text-orange-800 font-bold shadow-sm italic">
+          <div className="bg-orange-100 border-2 border-orange-300 rounded-full px-8 py-2 mb-8 text-orange-800 font-bold shadow-sm italic text-center">
             "Cukup temukan 3 kata kunci dalam laporanmu untuk skor 100!"
           </div>
 
@@ -239,7 +227,7 @@ export default function PermainanPageLevel1() {
                     <span className="text-5xl">{rewardData.icon}</span>
                     <div className="text-left">
                       <div className="text-xl font-black">{rewardData.title}</div>
-                      <div className="text-[10px] bg-white/60 px-3 py-0.5 rounded-full font-bold mt-1 inline-block">{rewardData.badge}</div>
+                      <div className="text-[10px] bg-white/60 px-3 py-0.5 rounded-full font-bold mt-1 inline-block uppercase">{rewardData.badge}</div>
                     </div>
                     <div className="ml-auto text-3xl font-black">{score}%</div>
                   </div>
