@@ -32,7 +32,7 @@ function CpDanTpPage() {
   return (
     <div>
       <iframe
-        src="https://drive.google.com/file/d/1HOGejhFi6ZOxDn6ZHCKPH5bZAevQ5JRE/preview"
+        src="https://drive.google.com/file/d/1Cs-stpPJh2TK19kPcYwl4Ri-fhnjseta/preview"
         title="CP dan TP"
         className="w-full"
         style={{ height: iframeHeight, marginTop: marginTop }}

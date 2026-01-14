@@ -3,150 +3,133 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { Fredoka, Salsa } from "next/font/google";
-import Link from "next/link";
 
-// Konfigurasi Font
 const fredoka = Fredoka({ weight: ["400"], subsets: ["latin"] });
 const salsa = Salsa({ weight: ["400"], subsets: ["latin"] });
 
-// Definisi Tipe Data
-type Keyword = {
-  words: string[];
-  label: string;
-};
+type Keyword = { words: string[]; label: string; };
+type GameData = { id: number; title: string; src: string; keywords: Keyword[]; hints: string[]; };
 
-type GameData = {
-  id: number;
-  title: string;
-  src: string;
-  keywords: Keyword[];
-};
-
-// === DATA GAME LEVEL 3 ===
+// === DATA GAME LEVEL 3 DENGAN CLUE PARAGRAF ===
 const LEVEL_3_GAMES: GameData[] = [
   {
     id: 0,
-    title: "Tantangan 1",
-    src: "https://jigex.com/3xyUL", // Link: Suku Dayak
+    title: "Suku Dayak",
+    src: "https://jigex.com/3xyUL",
     keywords: [
-      { words: ["dayak"], label: "Suku (Dayak)" },
-      { words: ["baju", "pakaian"], label: "Objek (Baju Adat)" },
-      { words: ["hitam"], label: "Warna (Hitam)" },
-      { words: ["manik", "hiasan"], label: "Detail (Manik/Hiasan)" },
-      { words: ["unik", "khas"], label: "Sifat (Unik/Khas)" }
+      { words: ["dayak"], label: "Suku" },
+      { words: ["baju", "pakaian"], label: "Pakaian Adat" },
+      { words: ["hitam"], label: "Warna Dominan" },
+      { words: ["manik", "hiasan"], label: "Detail Manik" },
+      { words: ["kalimantan"], label: "Asal Daerah" }
+    ],
+    hints: [
+      "Sebutkan nama Suku Dayak dan asal daerahnya (Kalimantan)",
+      "Ceritakan warna baju adat yang mereka gunakan (Hitam)",
+      "Jelaskan detail hiasan pada bajunya (Manik-manik)",
+      "Gunakan kata 'unik' atau 'khas' untuk menutup paragrafmu"
     ]
   },
   {
     id: 1,
-    title: "Tantangan 2",
-    src: "https://jigex.com/bPT2x", // Link: Rumah Adat
+    title: "Rumah Adat",
+    src: "https://jigex.com/bPT2x",
     keywords: [
-      { words: ["rumah"], label: "Objek (Rumah Adat)" },
-      { words: ["tinggi", "atap"], label: "Bentuk (Atap Tinggi)" },
-      { words: ["kayu", "rumput"], label: "Bahan (Kayu/Rumput)" },
-      { words: ["khas", "adat"], label: "Jenis (Adat/Khas)" }
+      { words: ["rumah"], label: "Objek" },
+      { words: ["tinggi", "atap"], label: "Bentuk Atap" },
+      { words: ["kayu", "papan"], label: "Bahan Bangunan" },
+      { words: ["adat", "tradisional"], label: "Jenis" }
+    ],
+    hints: [
+      "Apa objek utama pada gambar? (Rumah Adat)",
+      "Bagaimana bentuk atapnya? (Tinggi/Melengkung)",
+      "Terbuat dari bahan apa rumah tersebut? (Kayu/Alam)",
+      "Mengapa rumah ini terlihat istimewa?"
     ]
   },
   {
     id: 2,
-    title: "Tantangan 3",
-    src: "https://jigex.com/WuN8v", // Link: Kuda Lumping
+    title: "Kuda Lumping",
+    src: "https://jigex.com/WuN8v",
     keywords: [
-      { words: ["kuda", "lumping"], label: "Tarian (Kuda Lumping)" },
-      { words: ["tari", "menari"], label: "Aktivitas (Menari)" },
-      { words: ["jawa", "tradisi"], label: "Asal/Jenis (Jawa/Tradisi)" },
-      { words: ["warna", "bagus", "menarik"], label: "Visual (Warna-warni)" }
+      { words: ["kuda", "lumping"], label: "Nama Tarian" },
+      { words: ["jawa"], label: "Asal Daerah" },
+      { words: ["properti", "anyaman", "bambu"], label: "Alat Tari" },
+      { words: ["atraksi", "pertunjukan"], label: "Sifat" }
+    ],
+    hints: [
+      "Nama tarian ini adalah Kuda Lumping dari Jawa",
+      "Sebutkan properti yang digunakan (Kuda tiruan dari bambu)",
+      "Ceritakan gerakan atau suasana penarinya",
+      "Sebutkan bahwa ini adalah tradisi yang seru"
     ]
   },
   {
     id: 3,
-    title: "Tantangan 4",
-    src: "https://jigex.com/XqWWt", // Link: Tor-tor
+    title: "Tari Tor-tor",
+    src: "https://jigex.com/XqWWt",
     keywords: [
-      { words: ["tor", "tortor"], label: "Nama Tari (Tor-tor)" },
-      { words: ["batak", "toba", "sumatera", "sumatra"], label: "Asal (Batak/Sumut)" },
-      { words: ["tari", "menari", "seni"], label: "Jenis (Tarian/Seni)" },
-      { words: ["baris", "berbaris"], label: "Gerakan (Berbaris)" }
+      { words: ["tor", "tortor"], label: "Nama Tari" },
+      { words: ["batak", "sumatera", "toba"], label: "Asal" },
+      { words: ["ulos"], label: "Kain Adat" },
+      { words: ["baris", "serempak"], label: "Gerakan" }
+    ],
+    hints: [
+      "Sebutkan Suku Batak atau Sumatera Utara sebagai asalnya",
+      "Nama tariannya adalah Tor-tor",
+      "Sebutkan kain khas yang dipakai (Ulos)",
+      "Bagaimana posisi atau gerakan para penarinya?"
     ]
   },
   {
     id: 4,
-    title: "Tantangan 5",
-    src: "https://jigex.com/5JBk7", // Link: Gamelan
+    title: "Gamelan",
+    src: "https://jigex.com/5JBk7",
     keywords: [
-      { words: ["gamelan"], label: "Nama (Gamelan)" },
-      { words: ["musik", "bunyi"], label: "Jenis (Alat Musik)" },
-      { words: ["kendang", "angklung"], label: "Instrumen Lain" },
-      { words: ["tunjuk", "acara", "iringan"], label: "Fungsi (Pertunjukan)" },
-      { words: ["khas", "daerah"], label: "Sifat" }
+      { words: ["gamelan"], label: "Nama Alat" },
+      { words: ["musik", "tabuh"], label: "Jenis" },
+      { words: ["gong", "kendang", "saron"], label: "Instrumen" },
+      { words: ["jawa", "bali"], label: "Budaya" }
+    ],
+    hints: [
+      "Ini adalah seperangkat alat musik Gamelan",
+      "Sebutkan salah satu alatnya seperti Gong atau Kendang",
+      "Berasal dari kebudayaan daerah mana? (Jawa/Bali)",
+      "Kapan biasanya musik ini dimainkan?"
     ]
   }
 ];
 
 export default function PermainanPageLevel3() {
   const router = useRouter();
-
-  const [iframeHeight, setIframeHeight] = useState<string>("100vh");
-  const [marginTop, setMarginTop] = useState<string>("0px");
-
   const [currentView, setCurrentView] = useState<"selection" | "game">("selection");
   const [activeGameIndex, setActiveGameIndex] = useState<number>(0);
-
   const [description, setDescription] = useState<string>("");
-  const [feedbackMessage, setFeedbackMessage] = useState<string>("");
   const [score, setScore] = useState<number>(0);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [isGameWon, setIsGameWon] = useState<boolean>(false);
+  const [showHint, setShowHint] = useState<boolean>(true);
+  const [rewardData, setRewardData] = useState<{icon: string, title: string, msg: string, color: string} | null>(null);
+  const [savedScores, setSavedScores] = useState<{[key: number]: number}>({});
 
-  const GAME_DURATION = 240; // 4 menit
+  const GAME_DURATION = 360; // 6 Menit
   const [timeLeft, setTimeLeft] = useState<number>(GAME_DURATION);
 
   useEffect(() => {
-    const highestLevelCompleted = Number(localStorage.getItem('highestLevelCompleted') || 0);
-    if (highestLevelCompleted < 2) {
-       // alert("Selesaikan Level 2 terlebih dahulu!");
-       // router.replace('/bahan-belajar/permainan');
+    const scores = JSON.parse(localStorage.getItem("level3_all_scores") || "{}");
+    setSavedScores(scores);
+    
+    // Cek progres level
+    const progress = Number(localStorage.getItem('highestLevelCompleted') || 0);
+    if (progress < 2) {
+      // router.replace('/bahan-belajar/permainan'); // Opsional jika ingin mengunci level
     }
   }, [router]);
 
   useEffect(() => {
-    if (currentView !== "game") return;
-    if (timeLeft <= 0) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-
+    if (currentView !== "game" || timeLeft <= 0) return;
+    const timer = setInterval(() => { setTimeLeft((prev) => (prev <= 1 ? 0 : prev - 1)); }, 1000);
     return () => clearInterval(timer);
   }, [timeLeft, currentView]);
-
-  useEffect(() => {
-    if (timeLeft === 0 && !isSubmitted && currentView === "game") {
-      setFeedbackMessage("Waktu permainan habis!");
-      setIsSubmitted(true);
-    }
-  }, [timeLeft, isSubmitted, currentView]);
-
-  useEffect(() => {
-    const calculateLayout = () => {
-      const navbar = document.getElementById("navbar");
-      const footer = document.getElementById("footer");
-      const navbarHeight = navbar ? navbar.clientHeight : 0;
-      const footerHeight = footer ? footer.clientHeight : 0;
-      const availableHeight = window.innerHeight - navbarHeight - footerHeight - 20;
-      setIframeHeight(`${availableHeight > 0 ? availableHeight : 500}px`);
-      setMarginTop(`${navbarHeight}px`);
-    };
-    setTimeout(calculateLayout, 100);
-    window.addEventListener("resize", calculateLayout);
-    return () => window.removeEventListener("resize", calculateLayout);
-  }, []);
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
@@ -158,187 +141,134 @@ export default function PermainanPageLevel3() {
     setActiveGameIndex(index);
     setCurrentView("game");
     setDescription(""); 
-    setFeedbackMessage("");
     setScore(0);
     setIsSubmitted(false);
-    setIsGameWon(false);
     setTimeLeft(GAME_DURATION);
-  };
-
-  const backToSelection = () => {
-    setCurrentView("selection");
+    setRewardData(null);
   };
 
   const checkAnswer = () => {
-    if (timeLeft === 0) return;
-
-    if (!description || description.trim().length === 0) {
-      setFeedbackMessage("Isi jawaban terlebih dahulu!");
-      setIsSubmitted(true);
-      return;
-    }
-
+    if (!description.trim()) return alert("Tuliskan paragrafmu dulu!");
+    
     const currentGame = LEVEL_3_GAMES[activeGameIndex];
     const input = description.toLowerCase();
-    const keywords = currentGame.keywords;
     let matches = 0;
-
-    keywords.forEach((group) => {
-      const found = group.words.some((word) => input.includes(word));
-      if (found) matches++;
-    });
-
-    const totalKeywords = keywords.length;
-    const finalScore = totalKeywords > 0 ? Math.round((matches / totalKeywords) * 100) : 0;
+    currentGame.keywords.forEach((k) => { if (k.words.some((w) => input.includes(w))) matches++; });
     
+    const finalScore = Math.round((matches / currentGame.keywords.length) * 100);
     setScore(finalScore);
     setIsSubmitted(true);
 
-    if (finalScore === 100) {
-      setFeedbackMessage("LUAR BIASA! Paragrafmu sangat detail dan lengkap!");
-      setIsGameWon(true);
-    } else if (finalScore >= 60) {
-      setFeedbackMessage("Bagus! Paragrafmu sudah menjelaskan keunikan budaya.");
+    const newScores = { ...savedScores, [activeGameIndex]: finalScore };
+    setSavedScores(newScores);
+    localStorage.setItem("level3_all_scores", JSON.stringify(newScores));
+
+    if (finalScore >= 90) {
+      setRewardData({ icon: "🏆", title: "EMAS SEMPURNA!", msg: "Paragrafmu luar biasa detail! Kamu adalah ahli budaya!", color: "bg-yellow-50 border-yellow-400 text-yellow-700" });
+    } else if (finalScore >= 70) {
+      setRewardData({ icon: "🥈", title: "PERAK HEBAT!", msg: "Bagus! Paragrafmu sudah menjelaskan keunikan budaya dengan baik.", color: "bg-gray-100 border-gray-400 text-gray-700" });
     } else {
-      setFeedbackMessage("Ayo, ceritakan lebih banyak lagi dalam 1 paragraf utuh.");
+      setRewardData({ icon: "💡", title: "COBA LAGI!", msg: "Gunakan 'Petunjuk' agar paragrafmu lebih lengkap dan detail.", color: "bg-green-50 border-green-400 text-green-700" });
     }
   };
 
-  const handleCompleteLevel = () => {
-    if (typeof window !== "undefined") {
-      const currentProgress = Number(localStorage.getItem("highestLevelCompleted") || 0);
-      if (currentProgress < 3) {
-        localStorage.setItem("highestLevelCompleted", "3");
-      }
-    }
-    router.push("/bahan-belajar/permainan");
+  const nextChallenge = () => {
+    if (activeGameIndex < LEVEL_3_GAMES.length - 1) startGame(activeGameIndex + 1);
+    else setCurrentView("selection");
   };
 
   return (
-    <div className={`relative w-full bg-[#E8F5E9] ${fredoka.className}`} style={{ minHeight: "100vh", marginTop }}>
+    <div className={`relative w-full bg-[#E8F5E9] ${fredoka.className} min-h-screen pt-10 pb-10`}>
 
       {/* SELECTION SCREEN */}
       {currentView === "selection" && (
-        <div className="container mx-auto px-4 py-8 flex flex-col items-center">
+        <div className="container mx-auto px-4 flex flex-col items-center">
           <h1 className={`text-4xl text-green-800 font-bold mb-2 ${salsa.className}`}>LEVEL 3</h1>
+          <div className="bg-green-100 border-2 border-green-300 rounded-lg px-6 py-2 mb-8 text-green-900 font-bold shadow-sm">
+            ⏳ Waktu Pengerjaan: 6 Menit / Game
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl mb-10">
+            {LEVEL_3_GAMES.map((game, i) => {
+              const hasScore = savedScores[i] !== undefined;
+              return (
+                <button key={i} onClick={() => startGame(i)} className={`relative bg-white border-4 rounded-3xl p-6 shadow-lg transition-all hover:scale-105 ${hasScore ? 'border-emerald-400' : 'border-green-300'}`}>
+                  {hasScore && (
+                    <div className="absolute -top-3 -left-3 bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-bold border-2 border-white">
+                      {savedScores[i] >= 90 ? "🏆" : "🥈"}
+                    </div>
+                  )}
+                  <div className="absolute top-0 right-0 bg-green-600 text-white px-3 py-1 rounded-bl-xl text-xs font-bold uppercase">Misi {i + 1}</div>
+                  <h3 className={`text-xl font-bold text-gray-800 mb-1 ${salsa.className}`}>{game.title}</h3>
+                  <p className="text-gray-500 text-[10px] mb-3 leading-tight text-left italic">Tuliskan 1 paragraf utuh (min. 5 kalimat) tentang budaya ini!</p>
+                  {hasScore && <div className="text-xs font-bold text-emerald-600 bg-emerald-50 rounded-lg py-1 px-2">Skor Terbaik: {savedScores[i]}</div>}
+                </button>
+              );
+            })}
+          </div>
           
-          <div className="bg-green-100 border-2 border-green-300 rounded-lg px-4 py-2 mb-4 text-green-800 font-bold">
-            ⏳ Waktu Pengerjaan: 4 Menit / Game
-          </div>
-
-          <p className="mb-6 text-gray-700 text-center">Tantangan Terakhir: Uji kemampuan menulis paragrafmu!</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl mb-8">
-            {LEVEL_3_GAMES.map((game, i) => (
-              <button
-                key={game.id}
-                onClick={() => startGame(i)}
-                className="group relative bg-white border-4 rounded-2xl p-6 shadow-lg transition-all text-left hover:shadow-xl hover:scale-105 border-green-300"
-              >
-                <div className="absolute top-0 right-0 bg-green-600 text-white px-3 py-1 rounded-bl-lg text-sm font-bold">
-                  Misi {i + 1}
-                </div>
-                <h3 className={`text-2xl font-bold text-gray-800 mb-2 ${salsa.className}`}>
-                  {game.title}
-                </h3>
-                {/* Perubahan Instruksi Kartu Level 3 */}
-                <p className="text-gray-600 text-sm">Susun puzzle dan ceritakan keunikannya dalam 1 paragraf (minimal 5 kalimat)!</p>
-              </button>
-            ))}
-          </div>
-
-          <button
-            onClick={handleCompleteLevel}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full shadow-lg border-b-4 border-green-800 hover:scale-105"
-          >
-            ✅ Selesai Level 3 & Kembali
-          </button>
+          <button onClick={() => { localStorage.setItem("highestLevelCompleted", "3"); router.push("/bahan-belajar/permainan"); }} className="bg-green-600 text-white font-bold py-3 px-10 rounded-full shadow-xl hover:bg-green-700 transition-all border-b-4 border-green-900">✅ Selesai Semua Level</button>
         </div>
       )}
 
       {/* GAME SCREEN */}
       {currentView === "game" && (
-        <div className="flex flex-col h-full">
-
-          <div className="bg-green-600 p-3 flex justify-between items-center shadow-md">
-            <button onClick={backToSelection} className="bg-white text-green-700 px-4 py-1 rounded-full font-bold shadow hover:bg-gray-100 text-sm">
-              ⬅ Kembali
-            </button>
-
-            <div className={`flex items-center px-4 py-1 rounded bg-white font-mono border-2 font-bold ${
-              timeLeft < 30 ? 'border-red-500 text-red-600 animate-pulse' : 'border-green-200 text-green-700'
-            }`}>
-              ⏰ {formatTime(timeLeft)}
-            </div>
-
-            <div className="bg-white/20 px-4 py-1 rounded text-white font-bold text-sm">Skor: {score}</div>
+        <div className="flex flex-col h-[90vh] container mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-green-500 mt-4">
+          <div className="bg-green-600 p-4 flex justify-between items-center text-white">
+            <button onClick={() => setCurrentView("selection")} className="bg-white text-green-700 px-4 py-1 rounded-full font-bold text-xs shadow-md active:scale-90 transition-all">⬅ Menu</button>
+            <div className="font-mono text-lg font-bold bg-white/20 px-4 py-1 rounded-lg">⏰ {formatTime(timeLeft)}</div>
+            <div className="bg-green-800 px-4 py-1 rounded-lg font-bold text-sm">Skor: {score}</div>
           </div>
 
-          <div className="flex flex-col md:flex-row w-full overflow-hidden" style={{ height: iframeHeight }}>
-
-            <div className="w-full md:w-2/3 h-1/2 md:h-full bg-gray-900 relative border-r-4 border-green-400">
-              {LEVEL_3_GAMES[activeGameIndex] && (
-                <iframe
-                  key={LEVEL_3_GAMES[activeGameIndex].src}
-                  src={LEVEL_3_GAMES[activeGameIndex].src}
-                  allowFullScreen={true}
-                  className="w-full h-full border-none"
-                  title="Puzzle Game Level 3"
-                />
-              )}
-
-              {timeLeft === 0 && (
+          <div className="flex flex-col md:flex-row flex-grow overflow-hidden">
+            {/* Puzzle Area */}
+            <div className="w-full md:w-2/3 bg-gray-900 relative">
+              <iframe src={LEVEL_3_GAMES[activeGameIndex].src} className="w-full h-full border-none" />
+              {timeLeft === 0 && !isSubmitted && (
                 <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-10 text-white p-4">
-                  <h2 className={`text-3xl mb-4 text-red-500 ${salsa.className}`}>WAKTU HABIS!</h2>
-                  <p className="text-center text-sm mb-4">Ayo coba lagi untuk menulis paragraf yang sempurna!</p>
-                  <button onClick={backToSelection} className="bg-white text-black px-6 py-2 rounded-full font-bold hover:scale-105">
-                    Coba Game Lain
-                  </button>
+                  <h2 className="text-2xl mb-4 text-red-500 font-bold uppercase">Waktu Habis!</h2>
+                  <button onClick={() => startGame(activeGameIndex)} className="bg-green-500 px-8 py-2 rounded-full font-bold hover:scale-110">Coba Lagi</button>
                 </div>
               )}
             </div>
 
-            <div className="w-full md:w-1/3 h-1/2 md:h-full bg-[#F1F8E9] p-4 overflow-y-auto">
-              <div className="bg-white p-4 rounded-xl shadow border-2 flex flex-col h-full border-green-200">
-                {/* Judul Form Baru */}
-                <h2 className={`text-lg font-bold text-green-700 mb-2 ${salsa.className}`}>Tulis Paragraf Budaya</h2>
-                {/* Instruksi 1 Paragraf & 5 Kalimat */}
-                <p className="text-xs text-gray-700 mb-2 font-semibold">
-                   Buatlah 1 paragraf yang terdiri dari minimal 5 kalimat mengenai gambar budaya tersebut!
-                </p>
-
-                <textarea
-                  value={description}
-                  onChange={(e) => { 
-                      setDescription(e.target.value); 
-                      if(isSubmitted) setIsSubmitted(false); 
-                  }}
-                  disabled={timeLeft === 0}
-                  // Placeholder dikosongkan
-                  placeholder="Tuliskan satu paragraf lengkap (minimal 5 kalimat) kamu di sini..."
-                  className="w-full flex-grow p-3 border rounded mb-3 text-sm resize-none focus:outline-none focus:border-green-500 text-gray-800"
-                />
-
-                {isSubmitted && (
-                  <div className={`mb-3 p-2 rounded text-center text-xs font-bold ${
-                    score >= 60 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                  }`}>
-                    Skor: {score}<br />{feedbackMessage}
-                  </div>
+            {/* Input Area */}
+            <div className="w-full md:w-1/3 bg-green-50 p-6 flex flex-col h-full border-l-4 border-green-100 overflow-y-auto">
+              <div className="bg-white p-3 rounded-2xl border-2 border-green-200 mb-4 shadow-sm">
+                <button onClick={() => setShowHint(!showHint)} className="flex items-center justify-between w-full text-[10px] font-bold text-green-800 uppercase mb-1 outline-none">
+                  💡 Petunjuk Paragraf {showHint ? "▲" : "▼"}
+                </button>
+                {showHint && (
+                  <ul className="text-[10px] text-green-700 list-disc ml-4 leading-tight italic">
+                    {LEVEL_3_GAMES[activeGameIndex].hints.map((h, idx) => <li key={idx} className="mb-1">{h}</li>)}
+                  </ul>
                 )}
+              </div>
 
-                <button
-                  onClick={checkAnswer}
-                  disabled={timeLeft === 0}
-                  className={`w-full py-2 rounded font-bold text-white shadow transition-colors ${
-                    timeLeft === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-emerald-500 hover:bg-emerald-600"
-                  }`}
-                >
+              <h2 className={`text-md font-bold text-green-800 mb-2 ${salsa.className}`}>Tulis Paragraf Budaya</h2>
+              <textarea
+                value={description}
+                onChange={(e) => { setDescription(e.target.value); setIsSubmitted(false); }}
+                disabled={timeLeft === 0 || isSubmitted}
+                placeholder="Tuliskan minimal 1 paragraf lengkap di sini..."
+                className="w-full flex-grow p-4 border-2 border-green-200 rounded-2xl mb-4 text-sm focus:border-green-500 outline-none shadow-inner bg-white disabled:bg-gray-50 resize-none"
+              />
+
+              {isSubmitted && rewardData ? (
+                <div className={`mb-4 p-4 rounded-2xl border-2 text-center animate-bounce ${rewardData.color}`}>
+                  <div className="text-4xl mb-1">{rewardData.icon}</div>
+                  <div className="text-sm font-extrabold uppercase mb-1 tracking-tight">{rewardData.title}</div>
+                  <div className="text-[10px] leading-tight mb-3 font-bold italic">"{rewardData.msg}"</div>
+                  <button onClick={nextChallenge} className="bg-green-700 text-white px-6 py-2 rounded-full font-bold text-xs hover:bg-green-800 shadow-md">
+                    {activeGameIndex < LEVEL_3_GAMES.length - 1 ? "Lanjut Misi Berikutnya ➡" : "Kembali ke Menu"}
+                  </button>
+                </div>
+              ) : (
+                <button onClick={checkAnswer} disabled={timeLeft === 0} className="w-full py-3 rounded-2xl font-bold text-white shadow-lg bg-emerald-600 hover:bg-emerald-700 transition-all active:scale-95 disabled:bg-gray-400">
                   Simpan Paragraf
                 </button>
-              </div>
+              )}
             </div>
-
           </div>
         </div>
       )}

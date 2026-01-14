@@ -3,155 +3,105 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { Fredoka, Salsa } from "next/font/google";
-import Link from "next/link";
 
-// Konfigurasi Font
 const fredoka = Fredoka({ weight: ["400"], subsets: ["latin"] });
 const salsa = Salsa({ weight: ["400"], subsets: ["latin"] });
 
-// Definisi Tipe Data
-type Keyword = {
-  words: string[];
-  label: string;
-};
+type Keyword = { words: string[]; label: string; };
+type GameData = { id: number; title: string; src: string; keywords: Keyword[]; hints: string[]; };
 
-type GameData = {
-  id: number;
-  title: string;
-  src: string;
-  keywords: Keyword[];
-};
-
-// === DATA GAME LEVEL 2 ===
+// === DATA GAME LEVEL 2 DENGAN CLUE ===
 const LEVEL_2_GAMES: GameData[] = [
   {
     id: 0,
-    title: "Tantangan 1",
+    title: "Tari Piring",
     src: "https://jigex.com/YxUBx",
     keywords: [
-      { words: ["tari", "piring", "menari"], label: "Tari Piring" },
-      { words: ["merah", "baju"], label: "Warna Baju" },
-      { words: ["piring"], label: "Properti (Piring)" },
-      { words: ["meriah", "ramai"], label: "Suasana" },
-      { words: ["kesenian", "daerah"], label: "Jenis (Kesenian)" }
-    ]
+      { words: ["tari", "piring"], label: "Tari Piring" },
+      { words: ["merah"], label: "Warna Baju" },
+      { words: ["piring"], label: "Properti" },
+      { words: ["sumatera", "barat", "minang"], label: "Asal" }
+    ],
+    hints: ["Sebutkan nama tariannya (Piring)", "Apa warna bajunya?", "Properti apa yang dipegang?", "Berasal dari daerah mana? (Minang/Sumatera Barat)"]
   },
   {
     id: 1,
-    title: "Tantangan 2",
+    title: "Rumah Tongkonan",
     src: "https://jigex.com/jMFN6",
     keywords: [
       { words: ["tongkonan"], label: "Rumah Tongkonan" },
-      { words: ["sulawesi", "selatan", "toraja"], label: "Asal (Sulawesi)" },
-      { words: ["rumah", "adat"], label: "Jenis (Rumah Adat)" },
-      { words: ["kayu"], label: "Bahan (Kayu)" },
-      { words: ["tinggi", "lengkung"], label: "Bentuk (Tinggi)" }
-    ]
+      { words: ["toraja", "sulawesi"], label: "Asal" },
+      { words: ["kayu"], label: "Bahan" },
+      { words: ["lengkung", "tinggi"], label: "Bentuk" }
+    ],
+    hints: ["Apa nama rumah adat ini?", "Berasal dari mana? (Toraja/Sulawesi)", "Terbuat dari bahan apa? (Kayu)", "Bagaimana bentuk atapnya?"]
   },
   {
     id: 2,
-    title: "Tantangan 3",
+    title: "Pempek Palembang",
     src: "https://jigex.com/6yVue",
     keywords: [
       { words: ["pempek"], label: "Pempek" },
-      { words: ["palembang"], label: "Asal (Palembang)" },
-      { words: ["makanan", "khas", "kuliner"], label: "Jenis (Makanan)" },
-      { words: ["telur", "telor"], label: "Isian (Telur)" },
-      { words: ["coklat", "cokelat", "kuah"], label: "Warna/Kuah" },
-      { words: ["enak", "lezat"], label: "Rasa" }
-    ]
+      { words: ["palembang"], label: "Asal" },
+      { words: ["telur", "telor"], label: "Isian" },
+      { words: ["cuko", "kuah", "hitam", "cokelat"], label: "Kuah" }
+    ],
+    hints: ["Apa nama makanannya?", "Asal kotanya mana? (Palembang)", "Apa isian di dalamnya? (Telur)", "Sebutkan warna kuahnya!"]
   },
   {
     id: 3,
-    title: "Tantangan 4",
+    title: "Budaya Jakarta",
     src: "https://jigex.com/ZKcte",
     keywords: [
-      { words: ["jakarta", "betawi", "kota"], label: "Asal (Jakarta)" },
-      { words: ["kerak", "telor"], label: "Makanan (Kerak Telor)" },
-      { words: ["monas", "tinggi"], label: "Ikon (Monas)" },
-      { words: ["jaipong", "tari"], label: "Kesenian (Jaipong)" },
-      { words: ["bemo"], label: "Kendaraan (Bemo)" },
-      { words: ["indah", "ramai"], label: "Suasana" }
-    ]
+      { words: ["jakarta", "betawi"], label: "Asal" },
+      { words: ["kerak", "telor"], label: "Makanan" },
+      { words: ["monas"], label: "Ikon" },
+      { words: ["jaipong", "tari"], label: "Kesenian" }
+    ],
+    hints: ["Nama daerah/sukunya? (Betawi/Jakarta)", "Apa makanan khasnya? (Kerak Telor)", "Apa ikon terkenal di sana? (Monas)", "Sebutkan tarian daerahnya!"]
   },
   {
     id: 4,
-    title: "Tantangan 5",
+    title: "Budaya Papua",
     src: "https://jigex.com/yfABx",
     keywords: [
-      { words: ["papua", "barat"], label: "Asal (Papua)" },
-      { words: ["honai", "rumah"], label: "Rumah (Honai)" },
-      { words: ["papeda"], label: "Makanan (Papeda)" },
-      { words: ["sajojo", "tari"], label: "Tarian (Sajojo)" },
-      { words: ["adat", "khas"], label: "Ciri Khas" }
-    ]
+      { words: ["papua"], label: "Asal" },
+      { words: ["honai"], label: "Rumah" },
+      { words: ["papeda"], label: "Makanan" },
+      { words: ["sajojo"], label: "Tarian" }
+    ],
+    hints: ["Provinsi paling timur Indonesia?", "Apa nama rumah adatnya? (Honai)", "Apa makanan khasnya? (Papeda)", "Sebutkan tarian terkenalnya! (Sajojo)"]
   }
 ];
 
 export default function PermainanPageLevel2() {
   const router = useRouter();
-
-  const [iframeHeight, setIframeHeight] = useState<string>("100vh");
-  const [marginTop, setMarginTop] = useState<string>("0px");
-
   const [currentView, setCurrentView] = useState<"selection" | "game">("selection");
   const [activeGameIndex, setActiveGameIndex] = useState<number>(0);
-
   const [description, setDescription] = useState<string>("");
-  const [feedbackMessage, setFeedbackMessage] = useState<string>("");
   const [score, setScore] = useState<number>(0);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [isGameWon, setIsGameWon] = useState<boolean>(false);
+  const [showHint, setShowHint] = useState<boolean>(true);
+  const [rewardData, setRewardData] = useState<{icon: string, title: string, msg: string, color: string} | null>(null);
+  const [savedScores, setSavedScores] = useState<{[key: number]: number}>({});
 
-  const GAME_DURATION = 180; 
+  const GAME_DURATION = 300; // 5 Menit
   const [timeLeft, setTimeLeft] = useState<number>(GAME_DURATION);
 
   useEffect(() => {
-    const highestLevelCompleted = Number(localStorage.getItem('highestLevelCompleted') || 0);
-    if (highestLevelCompleted < 1) {
-       alert("Selesaikan Level 1 terlebih dahulu!");
-       router.replace('/bahan-belajar/permainan');
-    }
+    const scores = JSON.parse(localStorage.getItem("level2_all_scores") || "{}");
+    setSavedScores(scores);
+    
+    // Proteksi level
+    const progress = Number(localStorage.getItem('highestLevelCompleted') || 0);
+    if (progress < 1) router.replace('/bahan-belajar/permainan');
   }, [router]);
 
   useEffect(() => {
-    if (currentView !== "game") return;
-    if (timeLeft <= 0) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-
+    if (currentView !== "game" || timeLeft <= 0) return;
+    const timer = setInterval(() => { setTimeLeft((prev) => (prev <= 1 ? 0 : prev - 1)); }, 1000);
     return () => clearInterval(timer);
   }, [timeLeft, currentView]);
-
-  useEffect(() => {
-    if (timeLeft === 0 && !isSubmitted && currentView === "game") {
-      setFeedbackMessage("Waktu permainan habis!");
-      setIsSubmitted(true);
-    }
-  }, [timeLeft, isSubmitted, currentView]);
-
-  useEffect(() => {
-    const calculateLayout = () => {
-      const navbar = document.getElementById("navbar");
-      const footer = document.getElementById("footer");
-      const navbarHeight = navbar ? navbar.clientHeight : 0;
-      const footerHeight = footer ? footer.clientHeight : 0;
-      const availableHeight = window.innerHeight - navbarHeight - footerHeight - 20;
-      setIframeHeight(`${availableHeight > 0 ? availableHeight : 500}px`);
-      setMarginTop(`${navbarHeight}px`);
-    };
-    setTimeout(calculateLayout, 100);
-    window.addEventListener("resize", calculateLayout);
-    return () => window.removeEventListener("resize", calculateLayout);
-  }, []);
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
@@ -163,187 +113,137 @@ export default function PermainanPageLevel2() {
     setActiveGameIndex(index);
     setCurrentView("game");
     setDescription(""); 
-    setFeedbackMessage("");
     setScore(0);
     setIsSubmitted(false);
-    setIsGameWon(false);
     setTimeLeft(GAME_DURATION);
-  };
-
-  const backToSelection = () => {
-    setCurrentView("selection");
+    setRewardData(null);
   };
 
   const checkAnswer = () => {
-    if (timeLeft === 0) return;
-
-    if (!description || description.trim().length === 0) {
-      setFeedbackMessage("Isi jawaban terlebih dahulu!");
-      setIsSubmitted(true);
-      return;
-    }
-
+    if (!description.trim()) return alert("Tuliskan deskripsimu dulu!");
+    
     const currentGame = LEVEL_2_GAMES[activeGameIndex];
     const input = description.toLowerCase();
-    const keywords = currentGame.keywords;
     let matches = 0;
-
-    keywords.forEach((group) => {
-      const found = group.words.some((word) => input.includes(word));
-      if (found) matches++;
-    });
-
-    const totalKeywords = keywords.length;
-    const finalScore = totalKeywords > 0 ? Math.round((matches / totalKeywords) * 100) : 0;
+    currentGame.keywords.forEach((k) => { if (k.words.some((w) => input.includes(w))) matches++; });
     
+    const finalScore = Math.round((matches / currentGame.keywords.length) * 100);
     setScore(finalScore);
     setIsSubmitted(true);
 
-    if (finalScore === 100) {
-      setFeedbackMessage("LUAR BIASA! 4 kalimatmu sangat informatif!");
-      setIsGameWon(true);
-    } else if (finalScore >= 60) {
-      setFeedbackMessage("Bagus! Deskripsimu sudah cukup baik.");
+    const newScores = { ...savedScores, [activeGameIndex]: finalScore };
+    setSavedScores(newScores);
+    localStorage.setItem("level2_all_scores", JSON.stringify(newScores));
+
+    if (finalScore >= 90) {
+      setRewardData({ icon: "🏆", title: "MEDALI EMAS!", msg: "Hebat! 4 kalimatmu sangat lengkap dan informatif!", color: "bg-yellow-50 border-yellow-400 text-yellow-700" });
+    } else if (finalScore >= 70) {
+      setRewardData({ icon: "🥈", title: "MEDALI PERAK!", msg: "Bagus sekali! Sedikit lagi menuju sempurna.", color: "bg-gray-100 border-gray-400 text-gray-700" });
     } else {
-      setFeedbackMessage("Ayo ceritakan lebih banyak lagi dalam 4 kalimat.");
+      setRewardData({ icon: "💡", title: "SEMANGAT!", msg: "Ayo lebih detil lagi! Lihat 'Petunjuk' di atas untuk membantumu.", color: "bg-cyan-50 border-cyan-400 text-cyan-700" });
     }
   };
 
-  const handleCompleteLevel = () => {
-    if (typeof window !== "undefined") {
-      const currentProgress = Number(localStorage.getItem("highestLevelCompleted") || 0);
-      if (currentProgress < 2) {
-        localStorage.setItem("highestLevelCompleted", "2");
-      }
-    }
-    router.push("/bahan-belajar/permainan");
+  const nextChallenge = () => {
+    if (activeGameIndex < LEVEL_2_GAMES.length - 1) startGame(activeGameIndex + 1);
+    else setCurrentView("selection");
   };
 
   return (
-    <div className={`relative w-full bg-[#E0F7FA] ${fredoka.className}`} style={{ minHeight: "100vh", marginTop }}>
+    <div className={`relative w-full bg-[#E0F7FA] ${fredoka.className} min-h-screen pt-10 pb-10`}>
 
       {/* SELECTION SCREEN */}
       {currentView === "selection" && (
-        <div className="container mx-auto px-4 py-8 flex flex-col items-center">
-          <h1 className={`text-4xl text-cyan-700 font-bold mb-2 ${salsa.className}`}>LEVEL 2</h1>
+        <div className="container mx-auto px-4 flex flex-col items-center">
+          <h1 className={`text-4xl text-cyan-800 font-bold mb-2 ${salsa.className}`}>LEVEL 2</h1>
+          <div className="bg-cyan-100 border-2 border-cyan-300 rounded-lg px-6 py-2 mb-8 text-cyan-900 font-bold animate-pulse">
+            ⏳ 5 Menit Per Tantangan
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl mb-10">
+            {LEVEL_2_GAMES.map((game, i) => {
+              const hasScore = savedScores[i] !== undefined;
+              return (
+                <button key={i} onClick={() => startGame(i)} className={`relative bg-white border-4 rounded-3xl p-6 shadow-lg transition-all hover:scale-105 ${hasScore ? 'border-green-400' : 'border-cyan-300'}`}>
+                  {hasScore && (
+                    <div className="absolute -top-3 -left-3 bg-green-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-bold border-2 border-white">
+                      {savedScores[i] >= 90 ? "🏆" : "🥈"}
+                    </div>
+                  )}
+                  <div className="absolute top-0 right-0 bg-cyan-600 text-white px-3 py-1 rounded-bl-xl text-xs font-bold uppercase tracking-widest">Misi {i + 1}</div>
+                  <h3 className={`text-xl font-bold text-gray-800 mb-1 ${salsa.className}`}>{game.title}</h3>
+                  <p className="text-gray-500 text-[10px] mb-3 leading-tight text-left">Susun puzzle dan buatlah 4 kalimat deskripsi lengkap!</p>
+                  {hasScore && <div className="text-xs font-bold text-green-600 bg-green-50 rounded-lg py-1 px-2">Skor Terbaik: {savedScores[i]}</div>}
+                </button>
+              );
+            })}
+          </div>
           
-          <div className="bg-cyan-100 border-2 border-cyan-300 rounded-lg px-4 py-2 mb-4 text-cyan-800 font-bold">
-            ⏳ Waktu Pengerjaan: 3 Menit / Game
-          </div>
-
-          <p className="mb-6 text-gray-700">Pilih tantangan puzzle budaya di bawah ini:</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl mb-8">
-            {LEVEL_2_GAMES.map((game, i) => (
-              <button
-                key={game.id}
-                onClick={() => startGame(i)}
-                className="group relative bg-white border-4 rounded-2xl p-6 shadow-lg transition-all text-left hover:shadow-xl hover:scale-105 border-cyan-300"
-              >
-                <div className="absolute top-0 right-0 bg-cyan-600 text-white px-3 py-1 rounded-bl-lg text-sm font-bold">
-                  Misi {i + 1}
-                </div>
-                <h3 className={`text-2xl font-bold text-gray-800 mb-2 ${salsa.className}`}>
-                  {game.title}
-                </h3>
-                {/* Perubahan Instruksi Level 2 */}
-                <p className="text-gray-600 text-sm">Susun puzzle dan buatlah 4 kalimat deskripsi yang lengkap!</p>
-              </button>
-            ))}
-          </div>
-
-          <button
-            onClick={handleCompleteLevel}
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg border-b-4 border-green-700 hover:scale-105"
-          >
-            ✅ Selesai Level 2 & Kembali
-          </button>
+          <button onClick={() => { localStorage.setItem("highestLevelCompleted", "2"); router.push("/bahan-belajar/permainan"); }} className="bg-green-600 text-white font-bold py-3 px-10 rounded-full shadow-xl hover:bg-green-700 transition-all border-b-4 border-green-900">✅ Selesai Level 2</button>
         </div>
       )}
 
       {/* GAME SCREEN */}
       {currentView === "game" && (
-        <div className="flex flex-col h-full">
-
-          <div className="bg-cyan-600 p-3 flex justify-between items-center shadow-md">
-            <button onClick={backToSelection} className="bg-white text-cyan-700 px-4 py-1 rounded-full font-bold shadow hover:bg-gray-100 text-sm">
-              ⬅ Kembali
-            </button>
-
-            <div className={`flex items-center px-4 py-1 rounded bg-white font-mono border-2 font-bold ${
-              timeLeft < 30 ? 'border-red-500 text-red-600 animate-pulse' : 'border-cyan-200 text-cyan-600'
-            }`}>
-              ⏰ {formatTime(timeLeft)}
-            </div>
-
-            <div className="bg-white/20 px-4 py-1 rounded text-white font-bold text-sm">Skor: {score}</div>
+        <div className="flex flex-col h-[90vh] container mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-cyan-500 mt-4">
+          {/* Header */}
+          <div className="bg-cyan-600 p-4 flex justify-between items-center text-white">
+            <button onClick={() => setCurrentView("selection")} className="bg-white text-cyan-700 px-4 py-1 rounded-full font-bold text-xs shadow-md transition-all active:scale-90">⬅ Menu</button>
+            <div className="font-mono text-lg font-bold bg-white/20 px-4 py-1 rounded-lg tracking-tighter">⏰ {formatTime(timeLeft)}</div>
+            <div className="bg-cyan-800 px-4 py-1 rounded-lg font-bold text-sm tracking-tighter">Skor: {score}</div>
           </div>
 
-          <div className="flex flex-col md:flex-row w-full overflow-hidden" style={{ height: iframeHeight }}>
-
-            <div className="w-full md:w-2/3 h-1/2 md:h-full bg-gray-900 relative border-r-4 border-cyan-300">
-              {LEVEL_2_GAMES[activeGameIndex] && (
-                <iframe
-                  key={LEVEL_2_GAMES[activeGameIndex].src}
-                  src={LEVEL_2_GAMES[activeGameIndex].src}
-                  allowFullScreen={true}
-                  className="w-full h-full border-none"
-                  title="Puzzle Game Level 2"
-                />
-              )}
-
-              {timeLeft === 0 && (
+          <div className="flex flex-col md:flex-row flex-grow overflow-hidden">
+            {/* Puzzle Area */}
+            <div className="w-full md:w-2/3 bg-gray-900 relative">
+              <iframe src={LEVEL_2_GAMES[activeGameIndex].src} className="w-full h-full border-none" />
+              {timeLeft === 0 && !isSubmitted && (
                 <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-10 text-white p-4">
-                  <h2 className={`text-3xl mb-4 text-red-500 ${salsa.className}`}>WAKTU HABIS!</h2>
-                  <p className="text-center text-sm mb-4">Ayo coba lagi untuk melengkapi deskripsi!</p>
-                  <button onClick={backToSelection} className="bg-white text-black px-6 py-2 rounded-full font-bold hover:scale-105">
-                    Coba Game Lain
-                  </button>
+                  <h2 className="text-2xl mb-4 text-red-500 font-bold uppercase">Waktu Habis!</h2>
+                  <button onClick={() => startGame(activeGameIndex)} className="bg-cyan-500 px-8 py-2 rounded-full font-bold hover:scale-110 transition-all">Coba Lagi</button>
                 </div>
               )}
             </div>
 
-            <div className="w-full md:w-1/3 h-1/2 md:h-full bg-[#E0F2F1] p-4 overflow-y-auto">
-              <div className="bg-white p-4 rounded-xl shadow border-2 flex flex-col h-full border-cyan-200">
-                {/* Judul Baru */}
-                <h2 className={`text-lg font-bold text-cyan-700 mb-2 ${salsa.className}`}>Tulis Deskripsi Lengkap</h2>
-                {/* Instruksi 4 Kalimat */}
-                <p className="text-xs text-gray-700 mb-2 font-semibold">
-                   Buatlah 4 kalimat deskripsi berdasarkan gambar yang berhasil kamu susun!
-                </p>
-
-                <textarea
-                  value={description}
-                  onChange={(e) => { 
-                      setDescription(e.target.value); 
-                      if(isSubmitted) setIsSubmitted(false); 
-                  }}
-                  disabled={timeLeft === 0}
-                  // Placeholder dikosongkan dari contoh
-                  placeholder="Tuliskan 4 kalimat deskripsi kamu di sini..."
-                  className="w-full flex-grow p-3 border rounded mb-3 text-sm resize-none focus:outline-none focus:border-cyan-500 text-gray-800"
-                />
-
-                {isSubmitted && (
-                  <div className={`mb-3 p-2 rounded text-center text-xs font-bold ${
-                    score >= 60 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                  }`}>
-                    Skor: {score}<br />{feedbackMessage}
-                  </div>
+            {/* Input Area */}
+            <div className="w-full md:w-1/3 bg-cyan-50 p-6 flex flex-col h-full border-l-4 border-cyan-100 overflow-y-auto">
+              {/* Hints */}
+              <div className="bg-white p-3 rounded-2xl border-2 border-cyan-200 mb-4 shadow-sm">
+                <button onClick={() => setShowHint(!showHint)} className="flex items-center justify-between w-full text-[10px] font-bold text-cyan-800 uppercase mb-1">
+                  💡 Petunjuk Kata Kunci {showHint ? "▲" : "▼"}
+                </button>
+                {showHint && (
+                  <ul className="text-[10px] text-cyan-700 list-disc ml-4 leading-tight">
+                    {LEVEL_2_GAMES[activeGameIndex].hints.map((h, idx) => <li key={idx} className="mb-1">{h}</li>)}
+                  </ul>
                 )}
+              </div>
 
-                <button
-                  onClick={checkAnswer}
-                  disabled={timeLeft === 0}
-                  className={`w-full py-2 rounded font-bold text-white shadow transition-colors ${
-                    timeLeft === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
-                  }`}
-                >
+              <h2 className={`text-md font-bold text-cyan-800 mb-2 ${salsa.className}`}>4 Kalimat Deskripsi</h2>
+              <textarea
+                value={description}
+                onChange={(e) => { setDescription(e.target.value); setIsSubmitted(false); }}
+                disabled={timeLeft === 0 || isSubmitted}
+                placeholder="Tuliskan minimal 4 kalimat deskripsi di sini..."
+                className="w-full flex-grow p-4 border-2 border-cyan-200 rounded-2xl mb-4 text-sm focus:border-cyan-500 outline-none shadow-inner bg-white disabled:bg-gray-100 resize-none"
+              />
+
+              {/* Reward & Navigation */}
+              {isSubmitted && rewardData ? (
+                <div className={`mb-4 p-4 rounded-2xl border-2 text-center animate-bounce ${rewardData.color}`}>
+                  <div className="text-4xl mb-1">{rewardData.icon}</div>
+                  <div className="text-sm font-extrabold uppercase mb-1 tracking-tight">{rewardData.title}</div>
+                  <div className="text-[10px] leading-tight mb-3 font-bold">"{rewardData.msg}"</div>
+                  <button onClick={nextChallenge} className="bg-cyan-700 text-white px-6 py-2 rounded-full font-bold text-xs hover:bg-cyan-800 shadow-md transition-all">
+                    {activeGameIndex < LEVEL_2_GAMES.length - 1 ? "Lanjut Misi Berikutnya ➡" : "Kembali ke Menu"}
+                  </button>
+                </div>
+              ) : (
+                <button onClick={checkAnswer} disabled={timeLeft === 0} className="w-full py-3 rounded-2xl font-bold text-white shadow-lg bg-blue-500 hover:bg-blue-600 transition-all active:scale-95 disabled:bg-gray-400">
                   Simpan Jawaban
                 </button>
-              </div>
+              )}
             </div>
-
           </div>
         </div>
       )}

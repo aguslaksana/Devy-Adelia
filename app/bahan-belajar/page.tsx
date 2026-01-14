@@ -1,9 +1,9 @@
 "use client";
-import { useState, useEffect } from "react"; // Pastikan useEffect diimport
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fredoka, Kalam, Roboto, Salsa } from "next/font/google";
-import { useMusic } from "../music-context";
+import { useMusic } from "../music-context"; 
 
 // Konfigurasi Font
 const kalam = Kalam({ weight: "400", subsets: ["latin"] });
@@ -22,34 +22,28 @@ interface MenuButtonProps {
 }
 
 export default function Home() {
-  const { playClickSound, playMusic, pauseMusic } = useMusic();
-  const [isPlaying, setIsPlaying] = useState(false);
+  // Ambil isPlaying dan toggleMusic dari Context
+  const { playClickSound, toggleMusic, isPlaying } = useMusic();
 
   // === LOGIKA DETEKSI LANDSCAPE ===
   const [isPortrait, setIsPortrait] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      // Cek apakah lebar layar kurang dari 1024 (HP/Tablet) 
-      // dan apakah tinggi lebih besar dari lebar (Portrait)
       const isMobile = window.innerWidth < 1024;
       const portrait = window.innerHeight > window.innerWidth;
       setIsPortrait(isMobile && portrait);
     };
 
-    handleResize(); // Cek saat pertama kali muat
+    handleResize(); 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    window.addEventListener("orientationchange", handleResize);
 
-  const toggleMusic = () => {
-    if (isPlaying) {
-      pauseMusic();
-    } else {
-      playMusic();
-    }
-    setIsPlaying(!isPlaying);
-  };
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+    };
+  }, []);
 
   const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
 
@@ -87,7 +81,6 @@ export default function Home() {
       {/* === PESAN PERINTAH ROTASI HP === */}
       {isPortrait && (
         <div className="fixed inset-0 z-[9999] bg-[#FF9F1C] flex flex-col items-center justify-center p-6 text-center">
-          {/* Ikon HP Berputar */}
           <div className="relative w-24 h-24 mb-6 animate-pulse">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -103,15 +96,9 @@ export default function Home() {
           <div className="bg-white/20 backdrop-blur-md p-6 rounded-3xl border-2 border-white/40 shadow-2xl max-w-sm">
             <p className="text-white text-lg font-medium leading-relaxed">
               Hai! Agar belajarnya lebih asyik dan semua tombol terlihat jelas, 
-              silakan <span className="text-yellow-200 underline">aktifkan rotasi layar</span> dan 
-              <span className="font-bold text-white"> putar HP-mu ke posisi tidur (Landscape).</span>
+              silakan <span className="text-yellow-200 underline font-bold">aktifkan rotasi layar</span> dan 
+              putar HP-mu ke posisi <span className="font-bold text-white">Landscape.</span>
             </p>
-          </div>
-
-          <div className="mt-8 flex gap-2">
-            <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-            <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:0.2s]"></div>
-            <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:0.4s]"></div>
           </div>
         </div>
       )}
@@ -132,20 +119,56 @@ export default function Home() {
       {/* ISI UTAMA */}
       <div className="flex flex-col items-center justify-center w-full min-h-[90vh] gap-6 md:gap-8">
         <div className="relative z-10 text-center animate-fade-in-down">
-          <div className="relative bg-[#FF9F1C] border-[4px] border-white shadow-md rounded-full py-2 px-10 md:py-3 md:px-14 transform -rotate-2 hover:rotate-0 transition-transform duration-300">
+          <div className="relative bg-[#FF9F1C] border-[4px] border-white shadow-md rounded-full py-2 px-10 md:py-3 md:px-14 transform -rotate-2">
             <h1 className={`text-3xl md:text-5xl font-extrabold text-white tracking-wider ${salsa.className}`}>MAIN MENU</h1>
           </div>
         </div>
 
         <div className="relative z-10 flex flex-col items-center gap-4 w-full px-4">
-          <MenuButton href="/bahan-belajar/cp-dan-tp" title="CP dan TP" desc="Capaian & Tujuan Pembelajaran" number="01" bgGradient="bg-gradient-to-r from-[#00C6FF] to-[#0072FF]" shadowColor="bg-[#005bb5]" iconBg="bg-white/20" />
-          <MenuButton href="/bahan-belajar/video" title="Video Materi" desc="Tonton video interaktif seru" number="02" bgGradient="bg-gradient-to-r from-[#FF512F] to-[#DD2476]" shadowColor="bg-[#a30f45]" iconBg="bg-white/20" />
-          <MenuButton href="/bahan-belajar/permainan" title="Game" desc="Mainkan misi sambil belajar" number="03" bgGradient="bg-gradient-to-r from-[#8E2DE2] to-[#4A00E0]" shadowColor="bg-[#320096]" iconBg="bg-white/20" />
+          {/* Menu 01 */}
+          <MenuButton 
+            href="/bahan-belajar/cp-dan-tp" 
+            title="CP dan TP" 
+            desc="Capaian & Tujuan Pembelajaran" 
+            number="01" 
+            bgGradient="bg-gradient-to-r from-[#00C6FF] to-[#0072FF]" 
+            shadowColor="bg-[#005bb5]" 
+            iconBg="bg-white/20" 
+          />
+
+          {/* Menu 02 - DIUBAH MENJADI MATERI PEMBELAJARAN */}
+          <MenuButton 
+            href="/bahan-belajar/video" 
+            title="Materi Pembelajaran" 
+            desc="Video Seru & Materi Interaktif" 
+            number="02" 
+            bgGradient="bg-gradient-to-r from-[#FF512F] to-[#DD2476]" 
+            shadowColor="bg-[#a30f45]" 
+            iconBg="bg-white/20" 
+          />
+
+          {/* Menu 03 */}
+          <MenuButton 
+            href="/bahan-belajar/permainan" 
+            title="Game" 
+            desc="Mainkan misi sambil belajar" 
+            number="03" 
+            bgGradient="bg-gradient-to-r from-[#8E2DE2] to-[#4A00E0]" 
+            shadowColor="bg-[#320096]" 
+            iconBg="bg-white/20" 
+          />
         </div>
       </div>
 
       {/* Tombol Musik */}
-      <button onClick={toggleMusic} className="absolute bottom-5 right-5 z-50 bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl shadow-xl hover:scale-110 transition-all duration-300 border-2 border-white/30">
+      <button 
+        onClick={(e) => {
+          e.stopPropagation();
+          playClickSound();
+          toggleMusic();
+        }} 
+        className="absolute bottom-5 right-5 z-50 bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl shadow-xl hover:scale-110 transition-all duration-300 border-2 border-white/30"
+      >
         <span className="text-3xl">{isPlaying ? "🔊" : "🔇"}</span>
       </button>
     </main>

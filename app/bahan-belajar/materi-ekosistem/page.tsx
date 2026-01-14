@@ -35,7 +35,7 @@ function MateriEkosistemPage() {
 	return (
 		<div>
 			<iframe
-				src="https://drive.google.com/file/d/1lhdMn0Jak9ZI1hw7JCdxqPLZwfpt6Pva/preview"
+				src="https://drive.google.com/file/d/1VFm8K3Ingss6VaaripGKme4WGNqisL76/preview"
 				title="Materi khusus Ekosistem yang Harmonis"
 				className="w-full"
 				style={{ height: iframeHeight, marginTop: marginTop }}

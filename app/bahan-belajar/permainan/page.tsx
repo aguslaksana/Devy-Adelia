@@ -72,7 +72,7 @@ export default function ChooseGame() {
             <div className="flex-grow rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-100">
               <iframe
                 className="w-full h-full border-0"
-                src="https://drive.google.com/file/d/1hmWlgQOugMiAE-oy8nK4NvYn_bvwAiyS/preview"
+                src="https://drive.google.com/file/d/11aPgA3CPAPZ3ouhmG3fjsLU6myH_30Ys/preview"
                 allow="autoplay"
                 allowFullScreen
               ></iframe>
