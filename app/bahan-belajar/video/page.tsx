@@ -7,6 +7,7 @@ const fredoka = Fredoka({ weight: "400", subsets: ["latin"] });
 const salsa = Salsa({ weight: "400", subsets: ["latin"] });
 
 export default function MateriPembelajaranPage() {
+  // Prefix ini sangat penting agar link tidak 404 saat di-online-kan (GitHub Pages)
   const prefix = process.env.NODE_ENV === 'production' ? '/Devy-Adelia' : '';
 
   return (
@@ -34,7 +35,8 @@ export default function MateriPembelajaranPage() {
             <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-lg border-2 border-orange-100">
               <iframe
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/kAeNUTt8AhM" 
+                src="https://www.youtube.com/embed/kAeNUTt8AhM
+" 
                 title="Video Materi"
                 allowFullScreen
               />
@@ -56,9 +58,13 @@ export default function MateriPembelajaranPage() {
           </div>
         </div>
 
+        {/* TOMBOL KEMBALI KE MAIN MENU */}
         <div className="flex justify-center mt-10">
-          <Link href="/" className="bg-orange-500 text-white px-10 py-3 rounded-full font-bold shadow-xl hover:scale-105 transition-all">
-            ⬅ Kembali ke Menu Utama
+          <Link 
+            href={`${prefix}/bahan-belajar`} 
+            className="bg-orange-500 text-white px-10 py-3 rounded-full font-bold shadow-xl hover:scale-105 transition-all text-center"
+          >
+            ⬅ Kembali ke Main Menu
           </Link>
         </div>
       </div>

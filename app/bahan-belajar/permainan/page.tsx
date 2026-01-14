@@ -36,15 +36,23 @@ export default function ChooseGame() {
 
   return (
     <div 
-      className="w-full min-h-screen flex flex-col items-center justify-center mx-auto py-10 px-4"
+      className="w-full min-h-screen flex flex-col items-center justify-center mx-auto py-10 px-4 relative"
       style={{
-        // MENGGUNAKAN PREFIX AGAR BACKGROUND MUNCUL DI GITHUB
         backgroundImage: `url('${prefix}/bggame.png')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
     >
+      {/* === TOMBOL KEMBALI KE PILIHAN BAHAN AJAR === */}
+      <Link 
+        href="/bahan-belajar" 
+        className="md:absolute top-6 left-6 mb-6 md:mb-0 flex items-center gap-2 bg-white/95 text-orange-600 font-bold py-3 px-6 rounded-full shadow-lg hover:bg-orange-50 transition-all border-2 border-orange-500 active:scale-95 group z-10"
+      >
+        <span className="group-hover:-translate-x-1 transition-transform">⬅</span>
+        Kembali ke Pilihan Bahan Ajar
+      </Link>
+
       <h3 className="text-4xl md:text-5xl font-extrabold mb-8 text-center text-gray-800 bg-[#F5F5DC]/95 backdrop-blur-sm px-8 py-4 rounded-3xl shadow-[0_8px_0_rgba(0,0,0,0.2)] border-4 border-white">
         Menu Permainan Puzzle
       </h3>
@@ -64,7 +72,6 @@ export default function ChooseGame() {
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute -top-4 -right-4 bg-red-500 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-2xl hover:bg-red-600 transition-transform duration-200 hover:scale-110 shadow-lg border-2 border-white"
-              aria-label="Tutup"
             >
               &times;
             </button>
@@ -73,7 +80,6 @@ export default function ChooseGame() {
               <iframe
                 className="w-full h-full border-0"
                 src="https://drive.google.com/file/d/11aPgA3CPAPZ3ouhmG3fjsLU6myH_30Ys/preview"
-                allow="autoplay"
                 allowFullScreen
               ></iframe>
             </div>
@@ -82,18 +88,14 @@ export default function ChooseGame() {
       )}
 
       {/* Konten Level Permainan */}
-      <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 md:gap-8">
+      <div className="flex flex-col md:flex-row justify-center items-stretch gap-8">
         
         {/* === LEVEL 1 === */}
         <div className="flex flex-col items-center text-center bg-[#F5F5DC]/90 backdrop-blur-sm p-4 rounded-3xl shadow-xl w-full md:w-72 border-2 border-white/60">
-          <Link 
-            href="/bahan-belajar/permainan/1" 
-            className={`${cardBaseClass} bg-gradient-to-br from-orange-400 to-red-500`}
-          >
-            <span className="text-6xl mb-1 drop-shadow-md transform group-hover:rotate-12 transition-transform duration-300">🧩</span>
-            
+          <Link href="/bahan-belajar/permainan/1" className={`${cardBaseClass} bg-gradient-to-br from-orange-400 to-red-500`}>
+            <span className="text-6xl mb-1 transform group-hover:rotate-12 transition-transform duration-300">🧩</span>
             <div className="flex flex-col items-center">
-              <span className="text-2xl font-black drop-shadow-sm uppercase tracking-wide">Level 1</span>
+              <span className="text-2xl font-black uppercase tracking-wide">Level 1</span>
             </div>
           </Link>
           <p className="mt-4 text-sm md:text-base text-gray-700 font-bold">
@@ -110,14 +112,10 @@ export default function ChooseGame() {
               <span className="text-xs text-gray-200 mt-1">Selesaikan Level 1</span>
             </div>
           ) : (
-            <Link 
-              href="/bahan-belajar/permainan/2" 
-              className={`${cardBaseClass} bg-gradient-to-br from-purple-400 to-indigo-600`}
-            >
-              <span className="text-6xl mb-1 drop-shadow-md transform group-hover:rotate-12 transition-transform duration-300">🧩</span>
-              
+            <Link href="/bahan-belajar/permainan/2" className={`${cardBaseClass} bg-gradient-to-br from-purple-400 to-indigo-600`}>
+              <span className="text-6xl mb-1 transform group-hover:rotate-12 transition-transform duration-300">🧩</span>
               <div className="flex flex-col items-center">
-                <span className="text-2xl font-black drop-shadow-sm uppercase tracking-wide">Level 2</span>
+                <span className="text-2xl font-black uppercase tracking-wide">Level 2</span>
               </div>
             </Link>
           )}
@@ -135,14 +133,10 @@ export default function ChooseGame() {
               <span className="text-xs text-gray-200 mt-1">Selesaikan Level 2</span>
             </div>
           ) : (
-            <Link 
-              href="/bahan-belajar/permainan/3" 
-              className={`${cardBaseClass} bg-gradient-to-br from-teal-400 to-green-600`}
-            >
-              <span className="text-6xl mb-1 drop-shadow-md transform group-hover:rotate-12 transition-transform duration-300">🧩</span>
-              
+            <Link href="/bahan-belajar/permainan/3" className={`${cardBaseClass} bg-gradient-to-br from-teal-400 to-green-600`}>
+              <span className="text-6xl mb-1 transform group-hover:rotate-12 transition-transform duration-300">🧩</span>
               <div className="flex flex-col items-center">
-                <span className="text-2xl font-black drop-shadow-sm uppercase tracking-wide">Level 3</span>
+                <span className="text-2xl font-black uppercase tracking-wide">Level 3</span>
               </div>
             </Link>
           )}
