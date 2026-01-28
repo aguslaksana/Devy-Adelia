@@ -96,7 +96,7 @@ export default function PermainanPageLevel1() {
     setSavedScores(scores);
     
     // Cek apakah semua tantangan sudah 100
-    const completed = LEVEL_1_GAMES.every((_, i) => scores[i] >= 100);
+    const completed = LEVEL_1_GAMES.every((_, i) => (scores[i] || 0) >= 100);
     setIsLevelFinished(completed);
   }, []);
 
@@ -147,11 +147,11 @@ export default function PermainanPageLevel1() {
       localStorage.setItem("level1_all_scores", JSON.stringify(newScores));
     }
 
-    // LOGIKA PEMBUKA LEVEL 2:
-    // Jika semua tantangan di level 1 sudah mencapai skor 100
-    const isAllDone = LEVEL_1_GAMES.every((_, i) => newScores[i] >= 100);
+    // LOGIKA PEMBUKA LEVEL 2 (SINKRON DENGAN MENU UTAMA):
+    const isAllDone = LEVEL_1_GAMES.every((_, i) => (newScores[i] || 0) >= 100);
     if (isAllDone) {
-      localStorage.setItem("level_2_unlocked", "true");
+      // Menyimpan progres agar Menu Utama (ChooseGame) mendeteksi Level 2 sudah terbuka
+      localStorage.setItem("highestLevelCompleted", "1");
       setIsLevelFinished(true);
     }
 
@@ -215,10 +215,10 @@ export default function PermainanPageLevel1() {
             })}
           </div>
           
-          {/* Tombol ke Level 2 jika sudah terbuka */}
+          {/* PERBAIKAN: Mengarah ke folder /2/ sesuai struktur Anda */}
           {isLevelFinished && (
             <button 
-              onClick={() => router.push("/bahan-belajar/permainan/level-2")} 
+              onClick={() => router.push("/bahan-belajar/permainan/2/")} 
               className="mt-12 bg-green-500 hover:bg-green-600 text-white px-10 py-4 rounded-full font-black text-xl shadow-2xl animate-pulse transition-all"
             >
               MENUJU LEVEL 2 🚀
@@ -280,13 +280,13 @@ export default function PermainanPageLevel1() {
                         if (activeGameIndex < LEVEL_1_GAMES.length - 1) {
                           startGame(activeGameIndex + 1);
                         } else {
-                          // Jika sudah tantangan terakhir, kembali ke selection untuk lihat tombol Level 2
-                          setCurrentView("selection");
+                          // PERBAIKAN: Mengarah ke folder /2/ sesuai struktur Anda
+                          router.push("/bahan-belajar/permainan/2/");
                         }
                       }} 
                       className="bg-orange-600 text-white py-3 rounded-2xl font-bold text-xs shadow-md"
                     >
-                      {activeGameIndex < LEVEL_1_GAMES.length - 1 ? "Lanjut ➡" : "Selesai ✨"}
+                      {activeGameIndex < LEVEL_1_GAMES.length - 1 ? "Lanjut ➡" : "Ke Level 2 ✨"}
                     </button>
                   </div>
                 </div>
