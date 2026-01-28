@@ -89,10 +89,15 @@ export default function PermainanPageLevel1() {
   const [rewardData, setRewardData] = useState<{ icon: string, title: string, badge: string, msg: string, color: string } | null>(null);
   const [savedScores, setSavedScores] = useState<{ [key: number]: number }>({});
   const [timeLeft, setTimeLeft] = useState<number>(180);
+  const [isLevelFinished, setIsLevelFinished] = useState<boolean>(false);
 
   useEffect(() => {
     const scores = JSON.parse(localStorage.getItem("level1_all_scores") || "{}");
     setSavedScores(scores);
+    
+    // Cek apakah semua tantangan sudah 100
+    const completed = LEVEL_1_GAMES.every((_, i) => scores[i] >= 100);
+    setIsLevelFinished(completed);
   }, []);
 
   useEffect(() => {
@@ -134,14 +139,32 @@ export default function PermainanPageLevel1() {
     setIsSubmitted(true);
     
     const prevBest = savedScores[activeGameIndex] || 0;
+    let newScores = { ...savedScores };
+
     if (finalScore > prevBest) {
-      const newScores = { ...savedScores, [activeGameIndex]: finalScore };
+      newScores = { ...savedScores, [activeGameIndex]: finalScore };
       setSavedScores(newScores);
       localStorage.setItem("level1_all_scores", JSON.stringify(newScores));
     }
 
+    // LOGIKA PEMBUKA LEVEL 2:
+    // Jika semua tantangan di level 1 sudah mencapai skor 100
+    const isAllDone = LEVEL_1_GAMES.every((_, i) => newScores[i] >= 100);
+    if (isAllDone) {
+      localStorage.setItem("level_2_unlocked", "true");
+      setIsLevelFinished(true);
+    }
+
     if (finalScore === 100) {
-      setRewardData({ icon: "🏆", title: "LULUS!", badge: "PAKAR BUDAYA", msg: `Hebat! Kamu menemukan ${wordsFound.length} kata kunci penting.`, color: "bg-yellow-50 border-yellow-400 text-yellow-700" });
+      setRewardData({ 
+        icon: "🏆", 
+        title: "LULUS!", 
+        badge: "PAKAR BUDAYA", 
+        msg: isAllDone && activeGameIndex === LEVEL_1_GAMES.length - 1 
+             ? "LUAR BIASA! Semua tantangan Level 1 selesai. Level 2 kini terbuka!" 
+             : `Hebat! Kamu menemukan ${wordsFound.length} kata kunci penting.`, 
+        color: "bg-yellow-50 border-yellow-400 text-yellow-700" 
+      });
     } else {
       setRewardData({ icon: "💡", title: "COBA LAGI", badge: "PEMBELAJAR", msg: `Baru ditemukan ${wordsFound.length} kata kunci. Butuh minimal 3 untuk lulus.`, color: "bg-blue-50 border-blue-400 text-blue-700" });
     }
@@ -160,13 +183,19 @@ export default function PermainanPageLevel1() {
     <div className={`relative w-full bg-[#FFF8DC] ${fredoka.className} min-h-screen pt-20 pb-10`}>
       {currentView === "selection" && (
         <div className="container mx-auto px-4 flex flex-col items-center animate-in fade-in duration-500">
-          {/* PERBAIKAN: Jalur navigasi ditambah "/" di akhir */}
           <button onClick={() => router.push("/bahan-belajar/permainan/")} className="md:absolute top-0 left-4 mb-6 md:mb-0 bg-white text-orange-600 px-6 py-2 rounded-full font-bold shadow-md border-2 border-orange-500 active:scale-95 transition-all">⬅ Menu Utama</button>
           
           <h1 className={`text-4xl md:text-5xl text-orange-600 font-bold mb-2 ${salsa.className}`}>LEVEL 1</h1>
-          <div className="bg-orange-100 border-2 border-orange-300 rounded-full px-8 py-2 mb-8 text-orange-800 font-bold shadow-sm italic text-center">
-            "Cukup temukan 3 kata kunci dalam laporanmu untuk skor 100!"
-          </div>
+          
+          {isLevelFinished ? (
+            <div className="bg-green-100 border-2 border-green-400 rounded-full px-8 py-2 mb-8 text-green-800 font-bold shadow-sm flex items-center gap-2">
+              <span>🎉 Selamat! Level 2 telah terbuka!</span>
+            </div>
+          ) : (
+            <div className="bg-orange-100 border-2 border-orange-300 rounded-full px-8 py-2 mb-8 text-orange-800 font-bold shadow-sm italic text-center">
+              "Selesaikan semua tantangan dengan skor 100 untuk membuka Level 2!"
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
             {LEVEL_1_GAMES.map((game, i) => {
@@ -185,6 +214,16 @@ export default function PermainanPageLevel1() {
               );
             })}
           </div>
+          
+          {/* Tombol ke Level 2 jika sudah terbuka */}
+          {isLevelFinished && (
+            <button 
+              onClick={() => router.push("/bahan-belajar/permainan/level-2")} 
+              className="mt-12 bg-green-500 hover:bg-green-600 text-white px-10 py-4 rounded-full font-black text-xl shadow-2xl animate-pulse transition-all"
+            >
+              MENUJU LEVEL 2 🚀
+            </button>
+          )}
         </div>
       )}
 
@@ -236,7 +275,19 @@ export default function PermainanPageLevel1() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <button onClick={() => startGame(activeGameIndex)} className="bg-blue-500 text-white py-3 rounded-2xl font-bold text-xs shadow-md">🔄 Ulangi</button>
-                    <button onClick={() => activeGameIndex < LEVEL_1_GAMES.length - 1 ? startGame(activeGameIndex + 1) : setCurrentView("selection")} className="bg-orange-600 text-white py-3 rounded-2xl font-bold text-xs shadow-md">Lanjut ➡</button>
+                    <button 
+                      onClick={() => {
+                        if (activeGameIndex < LEVEL_1_GAMES.length - 1) {
+                          startGame(activeGameIndex + 1);
+                        } else {
+                          // Jika sudah tantangan terakhir, kembali ke selection untuk lihat tombol Level 2
+                          setCurrentView("selection");
+                        }
+                      }} 
+                      className="bg-orange-600 text-white py-3 rounded-2xl font-bold text-xs shadow-md"
+                    >
+                      {activeGameIndex < LEVEL_1_GAMES.length - 1 ? "Lanjut ➡" : "Selesai ✨"}
+                    </button>
                   </div>
                 </div>
               ) : (

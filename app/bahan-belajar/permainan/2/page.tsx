@@ -96,6 +96,7 @@ export default function PermainanPageLevel2() {
   const [animatedScores, setAnimatedScores] = useState<{ [key: number]: number }>({});
   const [timeLeft, setTimeLeft] = useState<number>(300);
   const [showReward, setShowReward] = useState(false);
+  const [isLevelFinished, setIsLevelFinished] = useState(false);
   const [rewardData, setRewardData] = useState<{ 
     icon: string, title: string, badge: string, msg: string, color: string, textColor: string, tips?: string[] 
   } | null>(null);
@@ -107,6 +108,10 @@ export default function PermainanPageLevel2() {
       const parsedScores = JSON.parse(localData);
       setSavedScores(parsedScores);
       setTimeout(() => setAnimatedScores(parsedScores), 500);
+
+      // Cek apakah semua tantangan sudah 100
+      const completed = LEVEL_2_GAMES.every((_, i) => parsedScores[i] >= 100);
+      setIsLevelFinished(completed);
     }
   }, []);
 
@@ -146,21 +151,8 @@ export default function PermainanPageLevel2() {
     let finalScore = 0;
     if (count >= 3) {
       finalScore = 100;
-      setRewardData({
-        icon: "🏆", title: "FANTASTIS!", badge: "DETEKTIF AHLI",
-        msg: "Analisis yang luar biasa! Kamu berhasil menemukan poin penting.",
-        color: "bg-yellow-400", textColor: "text-yellow-900"
-      });
     } else {
       finalScore = Math.round((count / 3) * 100);
-      setRewardData({
-        icon: count > 0 ? "💡" : "🔎", 
-        title: "AYO BERUSAHA!",
-        badge: "PENGAMAT",
-        msg: `Kamu menemukan ${count} poin penting. Butuh 3 poin untuk piala emas!`,
-        color: "bg-blue-400", textColor: "text-blue-900",
-        tips: ["Baca kembali petunjuk observasi."]
-      });
     }
 
     setScore(finalScore);
@@ -168,12 +160,38 @@ export default function PermainanPageLevel2() {
     setShowReward(true);
     
     const prevBest = savedScores[activeGameIndex] || 0;
+    let newScores = { ...savedScores };
+
     if (finalScore > prevBest) {
-      const newScores = { ...savedScores, [activeGameIndex]: finalScore };
+      newScores = { ...savedScores, [activeGameIndex]: finalScore };
       setSavedScores(newScores);
       setAnimatedScores(newScores);
       localStorage.setItem("level2_all_scores", JSON.stringify(newScores));
     }
+
+    // LOGIKA PEMBUKA LEVEL 3
+    const isAllDone = LEVEL_2_GAMES.every((_, i) => newScores[i] >= 100);
+    if (isAllDone) {
+      localStorage.setItem("level_3_unlocked", "true");
+      setIsLevelFinished(true);
+    }
+
+    if (finalScore === 100) {
+        setRewardData({
+          icon: "🏆", title: "FANTASTIS!", badge: "DETEKTIF AHLI",
+          msg: isAllDone ? "LUAR BIASA! Kamu telah menaklukkan semua tantangan Level 2. Level 3 kini terbuka!" : "Analisis yang luar biasa! Kamu berhasil menemukan poin penting.",
+          color: "bg-yellow-400", textColor: "text-yellow-900"
+        });
+      } else {
+        setRewardData({
+          icon: count > 0 ? "💡" : "🔎", 
+          title: "AYO BERUSAHA!",
+          badge: "PENGAMAT",
+          msg: `Kamu menemukan ${count} poin penting. Butuh 3 poin untuk piala emas!`,
+          color: "bg-blue-400", textColor: "text-blue-900",
+          tips: ["Baca kembali petunjuk observasi."]
+        });
+      }
   };
 
   if (!mounted) return <div className="min-h-screen bg-[#E0F7FA]" />;
@@ -183,13 +201,19 @@ export default function PermainanPageLevel2() {
       
       {currentView === "selection" ? (
         <div className="container mx-auto px-4 flex flex-col items-center animate-in fade-in duration-500">
-          {/* PERBAIKAN: Jalur navigasi ditambah "/" di akhir agar tidak 404 */}
           <button onClick={() => router.push("/bahan-belajar/permainan/")} className="md:absolute top-8 left-8 bg-white text-cyan-600 px-6 py-2 rounded-full font-bold shadow-md border-2 border-cyan-500 hover:scale-105 transition-all z-20">⬅ Menu Utama</button>
           
           <h1 className={`text-4xl md:text-5xl text-cyan-700 font-bold mb-2 ${salsa.className}`}>LEVEL 2</h1>
-          <div className="bg-cyan-100 border-2 border-cyan-300 rounded-full px-8 py-2 mb-8 text-cyan-800 font-bold shadow-sm italic text-sm text-center">
-            "Target: Temukan 3 kata kunci untuk Piala Emas!"
-          </div>
+          
+          {isLevelFinished ? (
+            <div className="bg-green-100 border-2 border-green-400 rounded-full px-8 py-2 mb-8 text-green-800 font-bold shadow-sm flex items-center gap-2">
+              <span>🎉 Hebat! Level 3 telah terbuka!</span>
+            </div>
+          ) : (
+            <div className="bg-cyan-100 border-2 border-cyan-300 rounded-full px-8 py-2 mb-8 text-cyan-800 font-bold shadow-sm italic text-sm text-center">
+              "Selesaikan semua tantangan dengan skor 100 untuk membuka Level 3!"
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full max-w-6xl mt-5">
             {LEVEL_2_GAMES.map((game, i) => {
@@ -203,12 +227,6 @@ export default function PermainanPageLevel2() {
                   {isPerfect && (
                     <div className="absolute -top-7 -left-5 bg-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg border-4 border-yellow-400 text-4xl animate-bounce z-10">
                       <span className="animate-pulse">🏆</span>
-                    </div>
-                  )}
-
-                  {realScore > 0 && realScore < 100 && (
-                    <div className="absolute -top-7 -left-5 bg-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg border-4 border-blue-400 text-4xl z-10">
-                      💡
                     </div>
                   )}
 
@@ -227,6 +245,15 @@ export default function PermainanPageLevel2() {
               );
             })}
           </div>
+
+          {isLevelFinished && (
+            <button 
+              onClick={() => router.push("/bahan-belajar/permainan/level-3")} 
+              className="mt-12 bg-green-500 hover:bg-green-600 text-white px-10 py-4 rounded-full font-black text-xl shadow-2xl animate-pulse transition-all"
+            >
+              MENUJU LEVEL 3 🚀
+            </button>
+          )}
         </div>
       ) : (
         /* GAME VIEW */
@@ -272,7 +299,22 @@ export default function PermainanPageLevel2() {
                     </div>
                   </div>
                   <p className="text-xs font-medium mb-4 italic text-center text-gray-700">{rewardData.msg}</p>
-                  <button onClick={() => setCurrentView("selection")} className="w-full py-3 bg-white/80 hover:bg-white text-gray-700 rounded-2xl font-bold text-xs shadow-sm transition-all">Kembali</button>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <button onClick={() => startGame(activeGameIndex)} className="bg-blue-500 text-white py-3 rounded-2xl font-bold text-xs shadow-md">🔄 Ulangi</button>
+                    <button 
+                      onClick={() => {
+                        if (activeGameIndex < LEVEL_2_GAMES.length - 1) {
+                          startGame(activeGameIndex + 1);
+                        } else {
+                          setCurrentView("selection");
+                        }
+                      }} 
+                      className="bg-cyan-600 text-white py-3 rounded-2xl font-bold text-xs shadow-md"
+                    >
+                      {activeGameIndex < LEVEL_2_GAMES.length - 1 ? "Lanjut ➡" : "Selesai ✨"}
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <button 
