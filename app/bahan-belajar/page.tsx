@@ -39,7 +39,6 @@ export default function Home() {
     };
   }, []);
 
-  // Prefix hanya untuk Image atau background-image manual
   const prefix = process.env.NODE_ENV === "production" ? "/Devy-Adelia" : "";
 
   const Modal = ({ title, children }: { title: string; children: React.ReactNode }) => (
@@ -54,13 +53,10 @@ export default function Home() {
             ✕
           </button>
         </div>
-
         <div className="flex-grow w-full bg-gray-100 relative">
           {children}
         </div>
-
         <div className="p-3 bg-white flex justify-center border-t border-gray-200">
-          {/* PERBAIKAN: Gunakan button untuk menutup modal agar tidak pindah halaman dan 404 */}
           <button 
             onClick={() => { playClickSound(); setActiveModal(null); }}
             className="bg-[#FF9F1C] hover:bg-[#ff8c00] text-white px-10 py-2 rounded-full font-bold shadow-lg transition-all active:scale-95 text-sm md:text-base"
@@ -88,11 +84,12 @@ export default function Home() {
     >
       <div className={`absolute inset-0 rounded-2xl translate-y-1.5 md:translate-y-2 ${shadowColor}`}></div>
       <div className={`relative rounded-2xl p-3 md:p-4 flex items-center gap-4 md:gap-5 ${bgGradient} border-[2px] border-white/30 overflow-hidden transition-all duration-300 group-hover:-translate-y-1 shadow-lg`}>
-        <div className={`flex-shrink-0 w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full shadow-inner ${iconBg} border-[3px] border-white/30 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300`}>
+        {/* PERBAIKAN: Menghapus group-hover:rotate-12 agar ikon tetap lurus */}
+        <div className={`flex-shrink-0 w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full shadow-inner ${iconBg} border-[3px] border-white/30 group-hover:scale-110 transition-transform duration-300`}>
           <span className={`text-white text-xl md:text-2xl font-extrabold ${salsa.className} drop-shadow-sm`}>{number}</span>
         </div>
-        <div className="flex flex-col flex-grow z-10 text-left">
-          <h3 className={`text-xl md:text-2xl font-bold text-white leading-none mb-1 ${salsa.className} drop-shadow-sm`}>{title}</h3>
+        <div className="flex flex-col flex-grow z-10 text-left justify-center">
+          <h3 className={`text-xl md:text-2xl font-bold text-white leading-tight mb-0.5 ${salsa.className} drop-shadow-sm`}>{title}</h3>
           <p className="text-white/90 text-[11px] md:text-sm font-medium leading-tight line-clamp-1">{desc}</p>
         </div>
       </div>
@@ -113,13 +110,13 @@ export default function Home() {
       <div className="absolute top-4 right-4 z-30 flex gap-3">
         <button 
           onClick={() => { playClickSound(); setActiveModal("identitas"); }} 
-          className="bg-white p-2 rounded-xl shadow-md hover:scale-110 transition-transform flex items-center gap-2"
+          className="bg-white p-2 rounded-xl shadow-md hover:scale-110 transition-transform"
         >
           <Image src={`${prefix}/identitas.png`} alt="Identitas" width={24} height={24} />
         </button>
         <button 
           onClick={() => { playClickSound(); setActiveModal("petunjuk"); }} 
-          className="bg-white p-2 rounded-xl shadow-md hover:scale-110 transition-transform flex items-center gap-2"
+          className="bg-white p-2 rounded-xl shadow-md hover:scale-110 transition-transform"
         >
           <Image src={`${prefix}/maps.gif`} alt="Petunjuk" width={24} height={24} unoptimized />
         </button>
@@ -145,15 +142,15 @@ export default function Home() {
         </Modal>
       )}
 
-      <div className="flex flex-col items-center justify-center w-full min-h-[90vh] gap-6 md:gap-8">
+      <div className="flex flex-col items-center justify-center w-full min-h-[90vh] gap-8">
         <div className="relative z-10 text-center">
-          <div className="relative bg-[#FF9F1C] border-[4px] border-white shadow-md rounded-full py-2 px-10 transform -rotate-2">
+          {/* PERBAIKAN: Menghapus transform -rotate-2 agar judul lurus sempurna */}
+          <div className="relative bg-[#FF9F1C] border-[4px] border-white shadow-md rounded-full py-2 px-12">
             <h1 className={`text-3xl md:text-5xl font-extrabold text-white tracking-wider ${salsa.className}`}>MAIN MENU</h1>
           </div>
         </div>
 
-        <div className="relative z-10 flex flex-col items-center gap-4 w-full px-4">
-          {/* PERBAIKAN: Tambahkan "/" di akhir href agar folder terbaca dengan benar di hosting */}
+        <div className="relative z-10 flex flex-col items-center gap-5 w-full px-4">
           <MenuButton href="/bahan-belajar/cp-dan-tp/" title="CP dan TP" desc="Capaian & Tujuan Pembelajaran" number="01" bgGradient="bg-gradient-to-r from-[#00C6FF] to-[#0072FF]" shadowColor="bg-[#005bb5]" iconBg="bg-white/20" />
           <MenuButton href="/bahan-belajar/video/" title="Materi Pembelajaran" desc="Video & Materi Interaktif" number="02" bgGradient="bg-gradient-to-r from-[#FF512F] to-[#DD2476]" shadowColor="bg-[#a30f45]" iconBg="bg-white/20" />
           <MenuButton href="/bahan-belajar/permainan/" title="Game" desc="Mainkan misi sambil belajar" number="03" bgGradient="bg-gradient-to-r from-[#8E2DE2] to-[#4A00E0]" shadowColor="bg-[#320096]" iconBg="bg-white/20" />
@@ -162,7 +159,7 @@ export default function Home() {
 
       <button 
         onClick={() => toggleMusic()} 
-        className="absolute bottom-5 right-5 z-50 bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl shadow-xl border-2 border-white/30"
+        className="absolute bottom-5 right-5 z-50 bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl shadow-xl border-2 border-white/30 hover:scale-105 transition-transform"
       >
         <span className="text-3xl">{isPlaying ? "🔊" : "🔇"}</span>
       </button>

@@ -47,7 +47,8 @@ function CpDanTpPage() {
             {/* Body Modal (Iframe Materi) */}
             <div className="flex-1 bg-gray-200 relative">
               <iframe
-                src="https://drive.google.com/file/d/1Cs-stpPJh2TK19kPcYwl4Ri-fhnjseta/preview"
+                /* Link baru telah dimasukkan di bawah ini dengan format /preview */
+                src="https://drive.google.com/file/d/1BPsPdT97lrmWNKzaiam_EycFhUnsnE9O/preview"
                 title="CP dan TP"
                 className="w-full h-full border-none"
                 allow="autoplay"
