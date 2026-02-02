@@ -89,16 +89,12 @@ export default function PermainanPageLevel1() {
   const [rewardData, setRewardData] = useState<{ icon: string, title: string, badge: string, msg: string, color: string } | null>(null);
   const [savedScores, setSavedScores] = useState<{ [key: number]: number }>({});
   const [timeLeft, setTimeLeft] = useState<number>(180);
-  const [isLevelFinished, setIsLevelFinished] = useState<boolean>(false);
   
-  // State untuk Petunjuk
-  const [showInstructions, setShowInstructions] = useState<boolean>(true); // Otomatis terbuka saat masuk
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
 
   useEffect(() => {
     const scores = JSON.parse(localStorage.getItem("level1_all_scores") || "{}");
     setSavedScores(scores);
-    const completed = LEVEL_1_GAMES.every((_, i) => (scores[i] || 0) >= 100);
-    setIsLevelFinished(completed);
   }, []);
 
   useEffect(() => {
@@ -110,6 +106,10 @@ export default function PermainanPageLevel1() {
     const timer = setInterval(() => { setTimeLeft((prev) => (prev <= 1 ? 0 : prev - 1)); }, 1000);
     return () => clearInterval(timer);
   }, [timeLeft, currentView, isSubmitted]);
+
+  // Logika Menghitung Total Skor Kumulatif (Maks 500)
+  const totalLevelScore = Object.values(savedScores).reduce((acc, curr) => acc + curr, 0);
+  const challengesCompleted = Object.keys(savedScores).filter(key => savedScores[Number(key)] >= 100).length;
 
   const startGame = (index: number) => {
     setActiveGameIndex(index);
@@ -151,7 +151,6 @@ export default function PermainanPageLevel1() {
     const isAllDone = LEVEL_1_GAMES.every((_, i) => (newScores[i] || 0) >= 100);
     if (isAllDone) {
       localStorage.setItem("highestLevelCompleted", "1");
-      setIsLevelFinished(true);
     }
 
     if (finalScore === 100) {
@@ -160,7 +159,7 @@ export default function PermainanPageLevel1() {
         title: "LULUS!", 
         badge: "PAKAR BUDAYA", 
         msg: isAllDone && activeGameIndex === LEVEL_1_GAMES.length - 1 
-             ? "LUAR BIASA! Semua tantangan Level 1 selesai. Level 2 kini terbuka!" 
+             ? "LUAR BIASA! Semua tantangan Level 1 selesai." 
              : `Hebat! Kamu menemukan ${wordsFound.length} kata kunci penting.`, 
         color: "bg-yellow-50 border-yellow-400 text-yellow-700" 
       });
@@ -179,49 +178,27 @@ export default function PermainanPageLevel1() {
   return (
     <div className={`relative w-full bg-[#FFF8DC] ${fredoka.className} min-h-screen pt-20 pb-10`}>
       
-      {/* 1. TABEL/MODAL PETUNJUK (OTOMATIS MUNCUL) */}
       {showInstructions && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-4xl h-[85vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border-[6px] border-blue-500 animate-in zoom-in duration-300">
-            {/* Header Modal */}
             <div className="p-5 bg-blue-500 flex justify-between items-center text-white">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">📜</span>
                 <h2 className="text-xl font-bold uppercase tracking-wider">Petunjuk Permainan Level 1</h2>
               </div>
-              <button 
-                onClick={() => setShowInstructions(false)}
-                className="bg-white/20 hover:bg-white/40 text-white w-10 h-10 flex items-center justify-center rounded-full font-bold transition-all"
-              >✕</button>
+              <button onClick={() => setShowInstructions(false)} className="bg-white/20 hover:bg-white/40 text-white w-10 h-10 flex items-center justify-center rounded-full font-bold transition-all">✕</button>
             </div>
-
-            {/* Isi Petunjuk (Iframe) */}
             <div className="flex-1 bg-gray-100">
-              <iframe
-                src="https://drive.google.com/file/d/1LN8puhnEelkZtVZKOWAcGFs381QrdLTR/preview"
-                className="w-full h-full border-none"
-                title="Petunjuk Permainan"
-              />
+              <iframe src="https://drive.google.com/file/d/1LN8puhnEelkZtVZKOWAcGFs381QrdLTR/preview" className="w-full h-full border-none" title="Petunjuk Permainan" />
             </div>
-
-            {/* Footer Modal dengan Tombol OK */}
             <div className="p-5 bg-blue-50 flex justify-center border-t-2 border-blue-100">
-              <button 
-                onClick={() => setShowInstructions(false)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-3 rounded-full font-black text-lg shadow-lg hover:scale-105 transition-all flex items-center gap-2"
-              >
-                SAYA SUDAH PAHAM! ✅
-              </button>
+              <button onClick={() => setShowInstructions(false)} className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-3 rounded-full font-black text-lg shadow-lg hover:scale-105 transition-all flex items-center gap-2">SAYA SUDAH PAHAM! ✅</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* 2. TOMBOL PETUNJUK TETAP DI POJOK (FLOATING BUTTON) */}
-      <button 
-        onClick={() => setShowInstructions(true)}
-        className="fixed bottom-6 right-6 z-[90] bg-blue-500 hover:bg-blue-600 text-white w-16 h-16 rounded-full shadow-2xl flex flex-col items-center justify-center border-4 border-white transition-all hover:scale-110 active:scale-95 group"
-      >
+      <button onClick={() => setShowInstructions(true)} className="fixed bottom-6 right-6 z-[90] bg-blue-500 hover:bg-blue-600 text-white w-16 h-16 rounded-full shadow-2xl flex flex-col items-center justify-center border-4 border-white transition-all hover:scale-110 active:scale-95 group">
         <span className="text-2xl group-hover:animate-bounce">📖</span>
         <span className="text-[9px] font-bold uppercase">Petunjuk</span>
       </button>
@@ -232,15 +209,17 @@ export default function PermainanPageLevel1() {
           
           <h1 className={`text-4xl md:text-5xl text-orange-600 font-bold mb-2 ${salsa.className}`}>LEVEL 1</h1>
           
-          {isLevelFinished ? (
-            <div className="bg-green-100 border-2 border-green-400 rounded-full px-8 py-2 mb-8 text-green-800 font-bold shadow-sm flex items-center gap-2">
-              <span>🎉 Selamat! Level 2 telah terbuka!</span>
+          {/* PERUBAHAN DISINI: PENGGANTI BANNER SELAMAT DENGAN PAPAN SKOR */}
+          <div className="bg-white border-[3px] border-orange-400 rounded-[2.5rem] px-10 py-5 mb-8 shadow-xl flex flex-col items-center gap-1 min-w-[320px] animate-in slide-in-from-top duration-700">
+            <span className="text-orange-600 font-black uppercase tracking-widest text-xs">Pencapaian Level 1</span>
+            <div className="flex items-end gap-1">
+              <span className="text-5xl font-black text-gray-800 leading-none">{totalLevelScore}</span>
+              <span className="text-xl font-bold text-gray-400 mb-1">/ 500</span>
             </div>
-          ) : (
-            <div className="bg-orange-100 border-2 border-orange-300 rounded-full px-8 py-2 mb-8 text-orange-800 font-bold shadow-sm italic text-center">
-              "Selesaikan semua tantangan dengan skor 100 untuk membuka Level 2!"
-            </div>
-          )}
+            <p className="text-[11px] text-orange-800 font-bold italic mt-1 bg-orange-50 px-4 py-1 rounded-full">
+              {challengesCompleted === 5 ? "🎉 Sempurna! Kamu telah menguasai Level 1" : `Kamu telah menyelesaikan ${challengesCompleted} dari 5 tantangan`}
+            </p>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
             {LEVEL_1_GAMES.map((game, i) => {
@@ -280,7 +259,6 @@ export default function PermainanPageLevel1() {
             </div>
 
             <div className="w-full md:w-2/5 lg:w-1/3 bg-orange-50 p-6 flex flex-col h-full border-l-4 border-orange-200 overflow-y-auto">
-              {/* KOLOM PETUNJUK OBSERVASI TETAP ADA DI SINI */}
               <div className="bg-white p-4 rounded-3xl border-2 border-orange-200 mb-4 shadow-sm">
                 <p className="text-[11px] font-bold text-orange-800 uppercase mb-2 italic">🎯 Hal yang harus dicari:</p>
                 <ul className="text-[11px] text-orange-700 list-disc ml-5 space-y-1">
@@ -306,10 +284,10 @@ export default function PermainanPageLevel1() {
                     </div>
                     <div className="ml-auto text-3xl font-black">{score}%</div>
                   </div>
-                  <p className="text-xs font-medium mb-4 italic text-center">"{rewardData.msg}"</p>
+                  <p className="text-xs font-medium mb-4 italic text-center text-gray-700">"{rewardData.msg}"</p>
                   <div className="grid grid-cols-2 gap-3">
                     <button onClick={() => startGame(activeGameIndex)} className="bg-blue-500 text-white py-3 rounded-2xl font-bold text-xs shadow-md">🔄 Ulangi</button>
-                    <button onClick={() => activeGameIndex < LEVEL_1_GAMES.length - 1 ? startGame(activeGameIndex + 1) : router.push("/bahan-belajar/permainan/2/")} className="bg-orange-600 text-white py-3 rounded-2xl font-bold text-xs shadow-md">Lanjut ➡</button>
+                    <button onClick={() => activeGameIndex < LEVEL_1_GAMES.length - 1 ? startGame(activeGameIndex + 1) : setCurrentView("selection")} className="bg-orange-600 text-white py-3 rounded-2xl font-bold text-xs shadow-md">Lanjut ➡</button>
                   </div>
                 </div>
               ) : (

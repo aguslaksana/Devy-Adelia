@@ -114,7 +114,6 @@ export default function PermainanPageLevel3() {
   const [savedScores, setSavedScores] = useState<{ [key: number]: number }>({});
   const [timeLeft, setTimeLeft] = useState<number>(360);
 
-  // State untuk Petunjuk Level 3
   const [showInstructions, setShowInstructions] = useState<boolean>(true);
 
   useEffect(() => {
@@ -128,6 +127,10 @@ export default function PermainanPageLevel3() {
     const timer = setInterval(() => { setTimeLeft((prev) => (prev <= 1 ? 0 : prev - 1)); }, 1000);
     return () => clearInterval(timer);
   }, [timeLeft, currentView, isSubmitted]);
+
+  // Hitung Total Skor Kumulatif Level 3
+  const totalLevelScore = Object.values(savedScores).reduce((acc, curr) => acc + curr, 0);
+  const challengesCompleted = Object.keys(savedScores).filter(key => savedScores[Number(key)] >= 100).length;
 
   const wordsFoundCount = useMemo(() => {
     const input = description.toLowerCase();
@@ -157,14 +160,27 @@ export default function PermainanPageLevel3() {
     setIsSubmitted(true);
     
     const prevBest = savedScores[activeGameIndex] || 0;
+    let newScores = { ...savedScores };
+    
     if (finalScore > prevBest) {
-      const newScores = { ...savedScores, [activeGameIndex]: finalScore };
+      newScores = { ...savedScores, [activeGameIndex]: finalScore };
       setSavedScores(newScores);
       localStorage.setItem("level3_all_scores", JSON.stringify(newScores));
     }
 
+    const isAllDone = LEVEL_3_GAMES.every((_, i) => (newScores[i] || 0) >= 100);
+    if (isAllDone) {
+      localStorage.setItem("highestLevelCompleted", "3");
+    }
+
     if (finalScore >= 100) {
-      setRewardData({ icon: "🏆", title: "LULUS SEMPURNA!", badge: "AHLI BUDAYA", msg: `Hebat! Kamu berhasil menemukan ${wordsFoundCount} kata kunci budaya.`, color: "bg-yellow-50 border-yellow-400 text-yellow-700" });
+      setRewardData({ 
+        icon: "🏆", title: "LULUS SEMPURNA!", badge: "AHLI BUDAYA", 
+        msg: isAllDone && activeGameIndex === LEVEL_3_GAMES.length - 1 
+            ? "LUAR BIASA! Kamu telah menuntaskan seluruh tantangan Level 3."
+            : `Hebat! Kamu berhasil menemukan ${wordsFoundCount} kata kunci budaya.`, 
+        color: "bg-yellow-50 border-yellow-400 text-yellow-700" 
+      });
     } else {
       setRewardData({ icon: "💡", title: "COBA LAGI", badge: "PEMBELAJAR", msg: `Baru ${wordsFoundCount} kata kunci ditemukan. Kamu butuh 5 kata kunci untuk skor 100!`, color: "bg-emerald-50 border-emerald-400 text-emerald-700" });
     }
@@ -175,49 +191,31 @@ export default function PermainanPageLevel3() {
   return (
     <div className={`relative w-full bg-[#F0FDF4] ${fredoka.className} min-h-screen pt-20 pb-10`}>
       
-      {/* 1. MODAL PETUNJUK LEVEL 3 (OTOMATIS MUNCUL) */}
       {showInstructions && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-4xl h-[85vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border-[6px] border-emerald-600 animate-in zoom-in duration-300">
-            {/* Header Modal */}
             <div className="p-5 bg-emerald-600 flex justify-between items-center text-white">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">📜</span>
                 <h2 className="text-xl font-bold uppercase tracking-wider">Petunjuk Permainan Level 3</h2>
               </div>
-              <button 
-                onClick={() => setShowInstructions(false)}
-                className="bg-white/20 hover:bg-white/40 text-white w-10 h-10 flex items-center justify-center rounded-full font-bold transition-all"
-              >✕</button>
+              <button onClick={() => setShowInstructions(false)} className="bg-white/20 hover:bg-white/40 text-white w-10 h-10 flex items-center justify-center rounded-full font-bold transition-all">✕</button>
             </div>
-
-            {/* Isi Petunjuk (Iframe) */}
             <div className="flex-1 bg-gray-100">
               <iframe
-                src="https://drive.google.com/file/d/1NvGz7zSxbYc0x9l7R0cWokFtwK1bbZnR/preview"
+                src="https://drive.google.com/file/d/12-6hjJFQohQ_z7qO1P1kgn_eFMpNYKfu/preview"
                 className="w-full h-full border-none"
                 title="Petunjuk Level 3"
               />
             </div>
-
-            {/* Footer Modal */}
             <div className="p-5 bg-emerald-50 flex justify-center border-t-2 border-emerald-100">
-              <button 
-                onClick={() => setShowInstructions(false)}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-12 py-3 rounded-full font-black text-lg shadow-lg hover:scale-105 transition-all"
-              >
-                SAYA SIAP BERANALISIS! ✅
-              </button>
+              <button onClick={() => setShowInstructions(false)} className="bg-emerald-600 hover:bg-emerald-700 text-white px-12 py-3 rounded-full font-black text-lg shadow-lg hover:scale-105 transition-all">SAYA SIAP BERANALISIS! ✅</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* 2. TOMBOL PETUNJUK TETAP (POJOK KANAN BAWAH) */}
-      <button 
-        onClick={() => setShowInstructions(true)}
-        className="fixed bottom-6 right-6 z-[90] bg-emerald-500 hover:bg-emerald-600 text-white w-16 h-16 rounded-full shadow-2xl flex flex-col items-center justify-center border-4 border-white transition-all hover:scale-110 active:scale-95 group"
-      >
+      <button onClick={() => setShowInstructions(true)} className="fixed bottom-6 right-6 z-[90] bg-emerald-500 hover:bg-emerald-600 text-white w-16 h-16 rounded-full shadow-2xl flex flex-col items-center justify-center border-4 border-white transition-all hover:scale-110 active:scale-95 group">
         <span className="text-2xl group-hover:animate-bounce">📖</span>
         <span className="text-[9px] font-bold uppercase">Petunjuk</span>
       </button>
@@ -227,8 +225,17 @@ export default function PermainanPageLevel3() {
           <button onClick={() => router.push("/bahan-belajar/permainan/")} className="md:absolute top-8 left-8 bg-white text-emerald-600 px-6 py-2 rounded-full font-bold shadow-md border-2 border-emerald-500 active:scale-95 transition-all">⬅ Menu Utama</button>
           
           <h1 className={`text-4xl md:text-5xl text-emerald-700 font-bold mb-2 ${salsa.className}`}>LEVEL 3</h1>
-          <div className="bg-emerald-100 border-2 border-emerald-300 rounded-full px-8 py-2 mb-8 text-emerald-800 font-bold shadow-sm italic text-sm text-center">
-            "Cukup temukan 5 kata kunci budaya dalam analisismu untuk skor 100!"
+          
+          {/* PAPAN SKOR LEVEL 3 */}
+          <div className="bg-white border-[3px] border-emerald-400 rounded-[2.5rem] px-10 py-5 mb-8 shadow-xl flex flex-col items-center gap-1 min-w-[320px] animate-in slide-in-from-top duration-700">
+            <span className="text-emerald-600 font-black uppercase tracking-widest text-xs">Pencapaian Level 3</span>
+            <div className="flex items-end gap-1">
+              <span className="text-5xl font-black text-gray-800 leading-none">{totalLevelScore}</span>
+              <span className="text-xl font-bold text-gray-400 mb-1">/ 500</span>
+            </div>
+            <p className="text-[11px] text-emerald-800 font-bold italic mt-1 bg-emerald-50 px-4 py-1 rounded-full">
+              {challengesCompleted === 5 ? "🎉 Sempurna! Kamu telah menguasai Level 3" : `Kamu telah menyelesaikan ${challengesCompleted} dari 5 tantangan`}
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
@@ -297,7 +304,7 @@ export default function PermainanPageLevel3() {
                   <p className="text-xs font-medium mb-4 italic text-center text-gray-700">"{rewardData.msg}"</p>
                   <div className="grid grid-cols-2 gap-3">
                     <button onClick={() => startGame(activeGameIndex)} className="bg-emerald-500 text-white py-3 rounded-2xl font-bold text-xs shadow-md">🔄 Ulangi</button>
-                    <button onClick={() => activeGameIndex < LEVEL_3_GAMES.length - 1 ? startGame(activeGameIndex + 1) : setCurrentView("selection")} className="bg-emerald-700 text-white py-3 rounded-2xl font-bold text-xs shadow-md">Lanjut ➡</button>
+                    <button onClick={() => activeGameIndex < LEVEL_3_GAMES.length - 1 ? startGame(activeGameIndex + 1) : router.push("/bahan-belajar/permainan/finish/")} className="bg-emerald-700 text-white py-3 rounded-2xl font-bold text-xs shadow-md">Lanjut ➡</button>
                   </div>
                 </div>
               ) : (
